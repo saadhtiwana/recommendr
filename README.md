@@ -17,10 +17,6 @@
   <sub>Design preview with sample data for a fictional pizzeria.</sub>
 </p>
 
-<p align="center">
-  <img src="docs/media/recommendr-fix.gif" alt="Fixing a false fact from the dashboard in one click" width="860">
-</p>
-
 > **Work in progress.** Phase 1 (scaffold and design documentation) is done; nothing below works
 > yet. Follow along in [`docs/system-design.md`](docs/system-design.md).
 
