@@ -4,7 +4,7 @@ Next.js (App Router) + TypeScript (strict) + Tailwind CSS, managed with pnpm.
 
 - **Marketing pages:** statically rendered, semantic HTML, JSON-LD, llms.txt: exemplary for crawlers and AI assistants (phase 8).
 - **Dashboard:** typed API client generated from the backend's OpenAPI schema (phase 8).
-- **Design system:** defined in phase 1b; see the design rules in the root `CLAUDE.md`.
+- **Design system:** defined in phase 1b (design rules in CONTRIBUTING.md).
 
 ```sh
 pnpm install

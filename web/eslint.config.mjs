@@ -6,7 +6,7 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    // CLAUDE.md: TypeScript strict, no "any".
+    // Project rule: TypeScript strict, no "any".
     rules: { "@typescript-eslint/no-explicit-any": "error" },
   },
   // Override default ignores of eslint-config-next.

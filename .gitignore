@@ -18,8 +18,8 @@ id_ed25519*
 credentials.json
 service-account*.json
 
-# --- Claude Code (local only; .claude/settings.json IS committed) ---
-.claude/settings.local.json
+# --- Local tool settings ---
+.claude/
 
 # --- Python / uv ---
 __pycache__/
@@ -56,3 +56,7 @@ pnpm-debug.log*
 
 # --- Docker volumes (self-hosting) ---
 /data/
+
+# --- AI assistant instruction files (kept local, never published) ---
+CLAUDE.md
+AGENTS.md

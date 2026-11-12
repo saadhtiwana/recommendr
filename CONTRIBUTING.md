@@ -45,6 +45,9 @@ These are enforced in review and CI:
 - **Secrets:** never commit secrets, never log API keys, never put real keys in fixtures.
   Config comes from environment variables only, documented in `.env.example` files.
 - **Comments** explain *why*, not *what*.
+- **Frontend design:** calm, dense but uncluttered, excellent typography, accessible charts,
+  consistent spacing. No purple/indigo/violet gradients, glowing blobs, emoji as icons, generic
+  three-card feature grids, filler copy, or unstyled default component-library looks.
 - **Docs:** update `docs/system-design.md` when behavior changes; add an ADR for significant
   decisions; supersede ADRs, never silently edit a decision.
 
