@@ -1,0 +1,3 @@
+# tools
+
+The shared tool registry used by both the internal agent and the MCP server: typed tools with pydantic input/output schemas, a description, a required scope and a side-effect class (read | generate | spend | publish). Tools: list_projects, get_visibility, get_trends, compare_competitors, list_answers, get_answer, list_sources, list_fanouts, list_false_facts, list_actions, generate_fix, start_check (spend), publish_fix (publish, later). Every invocation is authorized, rate-limited, audited and traced. Phase 1: empty skeleton, no logic yet; other modules use it only through its service interface, never its tables.
