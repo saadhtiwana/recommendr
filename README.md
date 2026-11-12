@@ -1,6 +1,25 @@
-# Recommendr
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/media/logo-full-white.svg">
+    <img src="docs/media/logo-full.svg" alt="Recommendr" width="280">
+  </picture>
+</p>
 
-**See whether ChatGPT, Gemini, Perplexity and Claude recommend your business, and fix it.**
+<p align="center"><strong>See whether ChatGPT, Gemini, Perplexity and Claude recommend your business, and fix it.</strong></p>
+
+<p align="center">
+  <a href="docs/media/recommendr-demo.mp4">
+    <img src="docs/media/recommendr-demo-poster.jpg" alt="Recommendr product video: the homepage, then the dashboard" width="860">
+  </a>
+  <br>
+  <a href="docs/media/recommendr-demo.mp4"><strong>▶ Watch the product video</strong></a> (1:43)
+  <br>
+  <sub>Design preview with sample data for a fictional pizzeria.</sub>
+</p>
+
+<p align="center">
+  <img src="docs/media/recommendr-fix.gif" alt="Fixing a false fact from the dashboard in one click" width="860">
+</p>
 
 > **Work in progress.** Phase 1 (scaffold and design documentation) is done; nothing below works
 > yet. Follow along in [`docs/system-design.md`](docs/system-design.md).
