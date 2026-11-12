@@ -22,14 +22,14 @@ export const OTHERS_COLOR: DataColor = "stone";
 
 /** Raw hex values for SVG (visx) where CSS classes can't be used. Mirror of globals.css. */
 export const HEX = {
-  bg: "#FAFAF8",
+  bg: "#F5F5F6",
   surface: "#FFFFFF",
-  fill: "#F2F2EE",
-  line: "#E5E5E0",
-  lineStrong: "#D4D4CE",
+  fill: "#F0F0F2",
+  line: "#E8E8EB",
+  lineStrong: "#D6D7DB",
   ink: "#111311",
-  ink2: "#4B4F4B",
-  ink3: "#6B706B",
+  ink2: "#45484D",
+  ink3: "#5F636A",
   lime: "#D6F69A",
   limeDeep: "#C4EC74",
   limeSoft: "#F0FBD9",

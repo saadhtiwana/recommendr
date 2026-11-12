@@ -15,16 +15,18 @@
   --color-white: #ffffff;
 
   /* surfaces */
-  --color-bg: #fafaf8;
+  /* canvas: the soft grey the framed page floats on; bg: the page frame itself */
+  --color-canvas: #e7e8ea;
+  --color-bg: #f5f5f6;
   --color-surface: #ffffff;
-  --color-fill: #f2f2ee;
-  --color-line: #e5e5e0;
-  --color-line-strong: #d4d4ce;
+  --color-fill: #f0f0f2;
+  --color-line: #e8e8eb;
+  --color-line-strong: #d6d7db;
 
   /* text */
   --color-ink: #111311;
-  --color-ink-2: #4b4f4b;
-  --color-ink-3: #6b706b;
+  --color-ink-2: #45484d;
+  --color-ink-3: #5f636a;
 
   /* the highlighter: a background behind lime-ink text, never a text/line colour itself */
   --color-lime: #d6f69a;
@@ -47,24 +49,32 @@
   /* change */
   --color-up: #15803d;
   --color-down: #b91c1c;
+  /* soft change badges (\"+38%\" chips) */
+  --color-up-soft: #eaf7ee;
+  --color-down-soft: #fbe7e7;
 
   /* type: families come from next/font CSS variables set on <html> */
-  --font-serif: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  /* one grotesk family: "serif" is kept as an alias so headline classes keep working */
+  --font-serif: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
 
   /* type scale: [size, line-height]; display/h1/h2 are serif, the rest sans */
-  --text-display: 3.5rem;
-  --text-display--line-height: 1.05;
-  --text-display--letter-spacing: -0.02em;
+  --text-hero: 5.5rem;
+  --text-hero--line-height: 0.98;
+  --text-hero--letter-spacing: -0.055em;
+  --text-display: 3.75rem;
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.045em;
   --text-h1: 2.5rem;
-  --text-h1--line-height: 1.1;
-  --text-h1--letter-spacing: -0.015em;
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.035em;
   --text-h2: 1.875rem;
-  --text-h2--line-height: 1.2;
-  --text-h2--letter-spacing: -0.01em;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.03em;
   --text-h3: 1.25rem;
-  --text-h3--line-height: 1.35;
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.015em;
   --text-h4: 1rem;
   --text-h4--line-height: 1.4;
   --text-body: 0.9375rem;
@@ -78,14 +88,18 @@
   --text-data--line-height: 1.4;
 
   /* radius: restrained; nothing is a pill except badges */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
   /* elevation: borders do the work; shadows only for floating layers */
-  --shadow-overlay: 0 1px 2px rgb(17 19 17 / 0.06), 0 8px 24px -6px rgb(17 19 17 / 0.12);
+  --shadow-overlay: 0 1px 2px rgb(17 19 17 / 0.06), 0 12px 32px -8px rgb(17 19 17 / 0.16);
+  /* the framed page floating on the canvas */
+  --shadow-frame: 0 1px 1px rgb(17 19 17 / 0.03), 0 30px 80px -30px rgb(17 19 17 / 0.18);
+  --shadow-card: 0 1px 2px rgb(17 19 17 / 0.04);
 
   /* motion */
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
@@ -125,7 +139,7 @@
 @layer base {
   html {
     color-scheme: light;
-    background: var(--color-bg);
+    background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;

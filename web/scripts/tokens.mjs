@@ -1,12 +1,12 @@
 // Highlighter palette: the single source of colour values checked by check-contrast.mjs.
 // Must match the @theme block in src/app/globals.css.
 export const t = {
-  bg: "#FAFAF8", surface: "#FFFFFF", fill: "#F2F2EE", line: "#E5E5E0", "line-strong": "#D4D4CE",
-  ink: "#111311", "ink-2": "#4B4F4B", "ink-3": "#6B706B", white: "#FFFFFF",
+  canvas: "#E7E8EA", bg: "#F5F5F6", surface: "#FFFFFF", fill: "#F0F0F2", line: "#E8E8EB", "line-strong": "#D6D7DB",
+  ink: "#111311", "ink-2": "#45484D", "ink-3": "#5F636A", white: "#FFFFFF",
   lime: "#D6F69A", "lime-deep": "#C4EC74", "lime-soft": "#F0FBD9", "lime-ink": "#1B4249",
   "on-dark": "#FFFFFF", "on-dark-2": "#DBDDDE", "overlay": "#0B0D0B",
   teal: "#1F8A8A", sky: "#4C9BE8", amber: "#E8A33D", rose: "#E06C75", stone: "#9CA3AF",
-  up: "#15803D", down: "#B91C1C",
+  up: "#15803D", down: "#B91C1C", "up-soft": "#EAF7EE", "down-soft": "#FBE7E7",
 };
 // Every text/background pair the UI actually uses: [foreground, background, minimum, where].
 export const textPairs = [
@@ -19,6 +19,7 @@ export const textPairs = [
   ["on-dark", "overlay", 4.5, "headline over darkened imagery (overlay floor; video frame check in phase 2 of the landing work)"],
   ["on-dark-2", "overlay", 4.5, "body text over darkened imagery"],
   ["white", "ink", 4.5, "primary button text"],
+  ["up", "up-soft", 4.5, "positive change badge"], ["down", "down-soft", 4.5, "negative change badge"], ["ink-3", "canvas", 4.5, "muted text on the canvas"],
   ["up", "bg", 4.5, "positive delta text"], ["up", "surface", 4.5, "positive delta on cards"],
   ["down", "bg", 4.5, "negative delta text"], ["down", "surface", 4.5, "negative delta on cards"],
 ];

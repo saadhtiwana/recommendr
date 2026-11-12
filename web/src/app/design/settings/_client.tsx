@@ -308,7 +308,7 @@ function TeamTab() {
 
 export function SettingsPreview() {
   return (
-    <AppShell active="settings" title="Settings" subtitle="Dera Hospitality · API keys, usage, MCP and team">
+    <AppShell active="settings" dateRange={false} title="Settings" subtitle="Dera Hospitality · API keys, usage, MCP and team">
       <Tabs defaultValue="keys">
         <TabsList className="mb-6">
           <TabsTrigger value="keys">API keys</TabsTrigger>

@@ -6,10 +6,10 @@ import { Kbd } from "./kbd";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
-   * primary: the lime pill call to action (lime background, lime-ink text).
-   * ink: solid ink secondary action. secondary: outline. hero: alias of primary at lg size.
+   * primary: ink pill. accent: lime pill (lime-ink text), the one standout action in a view.
+   * secondary: white pill with a hairline. ink: alias of primary. hero: accent at lg size.
    */
-  variant?: "primary" | "ink" | "secondary" | "ghost" | "destructive" | "hero";
+  variant?: "primary" | "accent" | "ink" | "secondary" | "ghost" | "destructive" | "hero";
   size?: "sm" | "md" | "lg";
   asChild?: boolean;
   /** Trailing keyboard hint, e.g. "⌘K". */
@@ -18,29 +18,32 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   leavesPage?: boolean;
 }
 
-const PILL = "rounded-full bg-lime text-lime-ink hover:bg-lime-deep active:bg-lime-deep";
+const LIME = "rounded-full bg-lime text-lime-ink hover:bg-lime-deep active:bg-lime-deep";
+const INK = "rounded-full bg-ink text-white hover:bg-ink-2";
 
 const VARIANTS = {
-  primary: PILL,
-  hero: PILL,
-  ink: "rounded-md bg-ink text-white hover:bg-ink-2",
-  secondary: "rounded-md border border-line-strong bg-surface text-ink hover:bg-fill",
-  ghost: "rounded-md text-ink-2 hover:bg-fill hover:text-ink",
-  destructive: "rounded-md bg-down text-white hover:opacity-90",
+  primary: INK,
+  ink: INK,
+  accent: LIME,
+  hero: LIME,
+  secondary: "rounded-full bg-surface text-ink ring-1 ring-inset ring-line-strong hover:bg-fill",
+  ghost: "rounded-full text-ink-2 hover:bg-fill hover:text-ink",
+  destructive: "rounded-full bg-down text-white hover:opacity-90",
 } as const;
 
 const SIZES = {
-  sm: "h-7 gap-1.5 px-2.5 text-small",
-  md: "h-8 gap-2 px-3 text-small",
-  lg: "h-10 gap-2 px-4 text-body",
+  sm: "h-8 gap-1.5 px-2.5 text-small",
+  md: "h-9 gap-2 px-3 text-small",
+  lg: "h-12 gap-2 px-4 text-body",
 } as const;
 
 // Pills read better with a little more horizontal room than squared buttons.
-const PILL_PAD = { sm: "px-3", md: "px-4", lg: "px-5" } as const;
+const PILL_PAD = { sm: "px-3", md: "px-4", lg: "px-6" } as const;
 
 const KBD_TONE: Partial<Record<NonNullable<ButtonProps["variant"]>, string>> = {
-  primary: "border-lime-ink/20 bg-lime-ink/10 text-lime-ink",
+  accent: "border-lime-ink/20 bg-lime-ink/10 text-lime-ink",
   hero: "border-lime-ink/20 bg-lime-ink/10 text-lime-ink",
+  primary: "border-transparent bg-white/15 text-white",
   ink: "border-transparent bg-white/15 text-white",
   destructive: "border-transparent bg-white/15 text-white",
 };
@@ -56,7 +59,7 @@ export function Button({
   type,
   ...props
 }: ButtonProps) {
-  const isPill = variant === "primary" || variant === "hero";
+  const isPill = variant !== "ghost";
   const s = size ?? (variant === "hero" ? "lg" : "md");
   const Comp = asChild ? Slot.Root : "button";
   // Siblings of the label. Kept as a flat array (not a fragment): Radix Slot requires

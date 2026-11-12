@@ -7,39 +7,47 @@
 
 ## 1. Direction
 
-**"A measuring instrument with an editorial feel."** Recommendr reports facts about how AI
-assistants see a business, with honest uncertainty. The interface should feel like a precise
-scientific instrument crossed with a serious publication: calm, exact, trustworthy,
-information-dense, never decorative.
+> **Revised (v2, after review):** the first pass ("a measuring instrument with an editorial feel":
+> serif headlines, paper tones, hairline borders) read as generic and was rejected. v2 follows the
+> references the product owner chose: soft framed pages, tight modern grotesk type, white rounded
+> cards, real imagery and motion on the marketing site. The honesty rules (intervals, muted
+> non-significant changes, no zeros for missing data) are unchanged.
 
-The signature idea of the Highlighter palette: **the product's job is to find where *you* are
-mentioned, so the one bright colour on screen is a highlighter pen.** It marks your brand in an
-AI answer, your confidence band in a chart, the single most important call to action, and what's
-selected. Everything else is ink on paper.
+**Look:** the page is a large rounded frame (`bg`, 24 to 32px radius) floating on a soft grey
+`canvas`. Inside it, white cards (`surface`, 20px radius, no borders, no shadows) carry the
+content. Headlines are big, tight Geist (negative tracking, often with the second half of the
+sentence in muted grey: "Measured where *customers ask.*"). Very few colours: ink, greys, the lime
+highlighter, and data colours inside charts.
 
-What we deliberately avoid: the dark "Linear clone" look (near-black canvas, purple accent,
-glassmorphism, glows), which has become the default output of AI design tools and reads as
-generic.
+**Marketing site:** motion is part of the brand. Headlines come into focus word by word (blur to
+sharp), a fanned stack of real AI-answer cards springs open in the hero, floating chips annotate
+it, sections reveal as they scroll in, a statement sentence fills in as you scroll, marquees
+carry the assistant names and the lime band. Real footage and photos of the kinds of businesses we
+serve (see Imagery). Every animation respects `prefers-reduced-motion`.
+
+**Product (dashboard):** calm and data-first like the marketing site's cards: framed shell, white
+sidebar card, KPI cards with soft change badges, smooth area charts with confidence bands. No
+stock imagery in the product.
 
 **Banned:** purple/indigo/violet; gradient blobs or glows; glassmorphism; emoji as icons; grids of
-three identical feature cards; stock illustrations of people; filler copy ("seamless",
-"elevate", "unleash", "supercharge", "revolutionize", "effortlessly", "game-changer");
-unstyled default component-library looks; centered-everything layouts. Tailwind's default colour
-palette is **disabled** in `globals.css` (`--color-*: initial`), so `indigo-500` can't be
-used by accident.
+three identical feature cards; fake social proof (names, quotes, ratings or logos implying
+customers we don't have); filler copy ("seamless", "elevate", "unleash", "supercharge",
+"revolutionize", "effortlessly", "game-changer"). Tailwind's default colour palette is
+**disabled** in `globals.css` (`--color-*: initial`).
 
 ## 2. Colour: the Highlighter palette
 
 | Token | Hex | Role |
 |---|---|---|
-| `bg` | `#FAFAF8` | Page background: a barely warm paper, so white cards read as raised without shadows |
+| `canvas` | `#E7E8EA` | The soft grey the framed page floats on |
+| `bg` | `#F5F5F6` | The page frame; white cards read as raised on it without borders or shadows |
 | `surface` | `#FFFFFF` | Cards, tables, inputs |
-| `fill` | `#F2F2EE` | Subtle fills: table headers, wells, code blocks, hover |
-| `line` | `#E5E5E0` | Hairline borders and grid lines |
-| `line-strong` | `#D4D4CE` | Control borders, dividers that must be seen |
+| `fill` | `#F0F0F2` | Subtle fills: table headers, wells, code blocks, hover |
+| `line` | `#E8E8EB` | Hairline borders and grid lines |
+| `line-strong` | `#D6D7DB` | Control borders, dividers that must be seen |
 | `ink` | `#111311` | Primary text, the user's brand in charts, primary buttons, focus rings |
-| `ink-2` | `#4B4F4B` | Secondary text |
-| `ink-3` | `#6B706B` | Muted text: labels, footnotes, timestamps, non-significant deltas (passes AA everywhere it is used, no darkening needed) |
+| `ink-2` | `#45484D` | Secondary text |
+| `ink-3` | `#5F636A` | Muted text: labels, footnotes, timestamps, non-significant deltas (darkened from #6B6F76 so it passes AA on fills and on the canvas) |
 | `lime` | `#D6F69A` | **The highlighter.** Primary pill buttons, brand mention marker, selected state, chips |
 | `lime-deep` | `#C4EC74` | Hover / pressed state of lime elements |
 | `lime-soft` | `#F0FBD9` | Confidence bands, soft highlights, soft tags, added lines in diffs |
@@ -53,6 +61,8 @@ used by accident.
 | `stone` | `#9CA3AF` | "Others" / aggregate series |
 | `up` | `#15803D` | Significant increase (always with ↗ arrow) |
 | `down` | `#B91C1C` | Significant decrease (always with ↘ arrow) |
+| `up-soft` / `down-soft` | `#EAF7EE` / `#FBE7E7` | Soft change badges; text in `up` / `down` |
+| `up-soft` / `down-soft` | `#EAF7EE` / `#FBE7E7` | Soft change badges ("+7.1 pts"); text in `up` / `down` |
 
 **Why these engine assignments:** none of the engines gets its provider's brand colour (OpenAI's
 green, Google's blue, Perplexity's teal-blue, Anthropic's clay). Brand colours would imply
@@ -68,11 +78,10 @@ order; "others" is always stone. The user's brand is never a data colour: it's a
    surface is `lime-ink` #1B4249, never black.** *Why:* lime on white is about 1.3:1, invisible as
    a line; behind deep teal-ink it is 9.1:1 and reads like a marker pen, the product's metaphor.
    Teal-ink instead of black keeps lime elements calm and slightly softer than the ink body text.
-2. **Primary calls to action are lime pills** (`Button variant="primary"`: lime background,
-   lime-ink text, fully rounded) with a small **up-right arrow when the action leaves the page**
-   (`leavesPage`: a new route or an external site). **Secondary actions stay ink or outline**
-   (`variant="ink"` solid ink with white text, 18.7:1; `variant="secondary"` outline). Use one
-   primary pill per view or section, so it still means "this one".
+2. **Buttons are pills.** `primary` = ink pill with white text (18.7:1); `accent` = **lime pill
+   with lime-ink text**, reserved for the one standout action in a view (the hero's "Run the free
+   check"); `secondary` = white pill with a hairline. A small **up-right arrow** marks actions that
+   leave the page (`leavesPage`).
 3. **Charts:** the user's brand is a **thick ink line (2.5px)** with its **confidence band filled
    in lime-soft**; competitors and engines use the data colours with **thinner lines (1.5px)**
    and their own dash pattern; **non-significant changes render muted**. *Why:* the eye should
@@ -98,24 +107,27 @@ text/background pair the UI actually uses:
 
 | Text | Background | Ratio | Result | Used for |
 |---|---|---|---|---|
-| `ink` #111311 | `bg` #FAFAF8 | 17.86:1 | AA pass (AAA) | body text on page |
+| `ink` #111311 | `bg` #F5F5F6 | 17.13:1 | AA pass (AAA) | body text on page |
 | `ink` #111311 | `surface` #FFFFFF | 18.67:1 | AA pass (AAA) | body text on cards |
-| `ink` #111311 | `fill` #F2F2EE | 16.63:1 | AA pass (AAA) | text in subtle fills, table header |
-| `ink-2` #4B4F4B | `bg` #FAFAF8 | 7.98:1 | AA pass (AAA) | secondary text on page |
-| `ink-2` #4B4F4B | `surface` #FFFFFF | 8.34:1 | AA pass (AAA) | secondary text on cards |
-| `ink-2` #4B4F4B | `fill` #F2F2EE | 7.43:1 | AA pass (AAA) | secondary text in fills |
-| `ink-3` #6B706B | `bg` #FAFAF8 | 4.84:1 | AA pass | muted text, labels, footnotes, non-significant deltas |
-| `ink-3` #6B706B | `surface` #FFFFFF | 5.05:1 | AA pass | muted text on cards |
-| `ink-3` #6B706B | `fill` #F2F2EE | 4.50:1 | AA pass | muted text in fills |
+| `ink` #111311 | `fill` #F0F0F2 | 16.40:1 | AA pass (AAA) | text in subtle fills, table header |
+| `ink-2` #45484D | `bg` #F5F5F6 | 8.43:1 | AA pass (AAA) | secondary text on page |
+| `ink-2` #45484D | `surface` #FFFFFF | 9.18:1 | AA pass (AAA) | secondary text on cards |
+| `ink-2` #45484D | `fill` #F0F0F2 | 8.07:1 | AA pass (AAA) | secondary text in fills |
+| `ink-3` #5F636A | `bg` #F5F5F6 | 5.54:1 | AA pass | muted text, labels, footnotes, non-significant deltas |
+| `ink-3` #5F636A | `surface` #FFFFFF | 6.04:1 | AA pass | muted text on cards |
+| `ink-3` #5F636A | `fill` #F0F0F2 | 5.30:1 | AA pass | muted text in fills |
 | `lime-ink` #1B4249 | `lime` #D6F69A | 9.11:1 | AA pass (AAA) | primary pill buttons, highlighted brand mention, selected nav, chips |
 | `lime-ink` #1B4249 | `lime-deep` #C4EC74 | 8.11:1 | AA pass (AAA) | primary pill hover/pressed |
 | `lime-ink` #1B4249 | `lime-soft` #F0FBD9 | 10.15:1 | AA pass (AAA) | soft tags, tinted pricing column, added diff lines |
 | `on-dark` #FFFFFF | `overlay` #0B0D0B | 19.51:1 | AA pass (AAA) | headline over darkened imagery (overlay floor; video frame check in phase 2 of the landing work) |
 | `on-dark-2` #DBDDDE | `overlay` #0B0D0B | 14.31:1 | AA pass (AAA) | body text over darkened imagery |
 | `white` #FFFFFF | `ink` #111311 | 18.67:1 | AA pass (AAA) | primary button text |
-| `up` #15803D | `bg` #FAFAF8 | 4.80:1 | AA pass | positive delta text |
+| `up` #15803D | `up-soft` #EAF7EE | 4.55:1 | AA pass | positive change badge |
+| `down` #B91C1C | `down-soft` #FBE7E7 | 5.45:1 | AA pass | negative change badge |
+| `ink-3` #5F636A | `canvas` #E7E8EA | 4.92:1 | AA pass | muted text on the canvas |
+| `up` #15803D | `bg` #F5F5F6 | 4.60:1 | AA pass | positive delta text |
 | `up` #15803D | `surface` #FFFFFF | 5.02:1 | AA pass | positive delta on cards |
-| `down` #B91C1C | `bg` #FAFAF8 | 6.19:1 | AA pass | negative delta text |
+| `down` #B91C1C | `bg` #F5F5F6 | 5.94:1 | AA pass | negative delta text |
 | `down` #B91C1C | `surface` #FFFFFF | 6.47:1 | AA pass | negative delta on cards |
 
 ### Graphics on cards (WCAG 1.4.11 non-text contrast: 3:1)
@@ -128,7 +140,7 @@ text/background pair the UI actually uses:
 | `amber` #E8A33D | `surface` | 2.16:1 | below 3:1, see mitigation | data series |
 | `rose` #E06C75 | `surface` | 3.20:1 | pass | data series |
 | `stone` #9CA3AF | `surface` | 2.54:1 | below 3:1, see mitigation | 'other' series |
-| `line-strong` #D4D4CE | `surface` | 1.49:1 | below 3:1, see mitigation | input borders |
+| `line-strong` #D6D7DB | `surface` | 1.44:1 | below 3:1, see mitigation | input borders |
 
 ### Chart series separation under colour-vision deficiency (min pairwise ΔE76)
 
@@ -163,57 +175,63 @@ checks them against the overlay's darkest-required floor (#0B0D0B); the real che
 
 | Role | Family | Why |
 |---|---|---|
-| Display & headings (display, h1, h2) | **Newsreader** (variable, optical-size axis) | An editorial text serif designed for screens. Its `opsz` axis gives 56px headlines a sharper display cut and keeps small serif text sturdy. Compared with **Fraunces** (too quirky; its "wonk" draws attention to itself) and **Instrument Serif** (one weight, condensed, trendy), Newsreader reads as *serious publication*, which is the half of our direction that builds trust. |
-| UI (h3, h4, body, small, micro) | **IBM Plex Sans** | Engineered, slightly technical, with true tabular figures and a distinctive but quiet voice. It reads as *instrument* and avoids the default-Inter look. |
-| Numbers, percentages, timestamps, model IDs, code | **IBM Plex Mono** | Same skeleton as Plex Sans, so data in mono sits naturally next to UI text; unambiguous 0/O and 1/l for model IDs and keys. |
+| Headlines and UI | **Geist** | A tight, modern grotesk that holds up at 90px with −0.055em tracking and stays clean at 13px. One family for everything keeps the look calm. (`font-serif` is kept as an alias to Geist so older classes still work.) |
+| Numbers, percentages, timestamps, model IDs, code | **Geist Mono** | Same proportions as Geist; tabular figures for columns of numbers. |
 
-All three are loaded with `next/font/google`, which **self-hosts** them (downloaded at build,
-served from our domain, no request to Google at runtime) with size-adjusted fallbacks to avoid
-layout shift ([`web/src/lib/fonts.ts`](../../web/src/lib/fonts.ts)).
+Both are self-hosted through `next/font/google` (downloaded at build, served from our domain,
+size-adjusted fallbacks so there's no layout shift).
 
-**Type scale** (Tailwind `text-*` utilities):
+| Token | Size / line-height / tracking | Use |
+|---|---|---|
+| `text-hero` | 88 / 0.98 / −0.055em | Landing hero (fluid with `clamp`) |
+| `text-display` | 60 / 1 / −0.045em | Section headlines on marketing pages |
+| `text-h1` | 40 / 1.05 / −0.035em | Page titles in the app ("Overview") |
+| `text-h2` | 30 / 1.15 / −0.03em | Card headline numbers, sub-sections |
+| `text-h3` | 20 / 1.3 / −0.015em | Panel titles |
+| `text-h4`, `text-body`, `text-small`, `text-micro`, `text-data` | 16 / 15 / 13 / 11 / 13 | UI text; `text-data` is mono |
 
-| Token | Size / line-height | Family | Use |
-|---|---|---|---|
-| `text-display` | 56 / 1.05, −0.02em | serif | Landing hero only |
-| `text-h1` | 40 / 1.1, −0.015em | serif | Page titles on marketing; big numbers |
-| `text-h2` | 30 / 1.2 | serif | Section titles |
-| `text-h3` | 20 / 1.35 | sans 600 | Panel titles |
-| `text-h4` | 16 / 1.4 | sans 600 | Sub-sections, card titles |
-| `text-body` | 15 / 1.55 | sans 400 | Running text |
-| `text-small` | 13 / 1.45 | sans | Controls, table cells, dense UI |
-| `text-micro` | 11 / 1.3, +0.06em, uppercase | sans 500 | Labels above values, column groups |
-| `text-data` | 13 / 1.4 | mono, tabular | Numbers, intervals, timestamps |
+Tabular numerals wherever data appears (`tabular`).
 
-**Tabular numerals wherever data appears** (`tabular` utility = `tabular-nums lining-nums`).
-Dashboards use sans for chrome and mono for values; serif appears in the dashboard only for the
-page title and the headline visibility number.
+## Imagery
+
+Footage and stills come from **Mixkit** (free commercial license, no attribution required) and
+are downloaded, re-encoded and served from `/public/media` (never hotlinked). Every file is
+recorded in [`web/public/media/CREDITS.md`](../../web/public/media/CREDITS.md);
+`pnpm media` reproduces them (`web/scripts/fetch-media.mjs`, needs ffmpeg).
+
+- Video: 8 to 10 s loops, no audio, 1280×720, H.264 + VP9, posters in JPG and AVIF; all four clips
+  together are about 4 MB. Video plays only on the client after first paint and never with
+  `prefers-reduced-motion` or Save-Data (poster only). Text on video sits on a dark gradient.
+- Photos: one consistent treatment: 4:5 crop, 20px radius, a slight warm grade
+  (`saturate(0.92) sepia(0.06)`).
+- **Rules:** never attach names, quotes, ratings or company names to stock people; never present
+  them as customers or testimonials (no testimonials section until we have real users); no stock
+  imagery inside the dashboard or product UI.
 
 ## 4. Space, shape, elevation
 
-- **Spacing:** 4px grid (Tailwind's default 0.25rem steps). Dense UI uses 8 / 12 / 16; sections
-  use 24 / 32 / 48; marketing sections 96 / 128.
-- **Radius:** restrained. `xs 2px` (highlight marks, bars), `sm 4px` (badges, kbd), `md 6px`
-  (controls), `lg 8px` (panels, dialogs). Nothing is a pill except status dots.
-- **Borders over shadows:** cards are `surface` with a 1px `line` border on `bg`; no shadow.
-  Only floating layers (menus, popovers, dialogs, toasts, tooltips) get `shadow-overlay`, because
-  they genuinely sit above the page.
-- **Rules:** a 2px ink top rule marks things that need a decision (approval cards).
+- **Spacing:** 4px grid. Cards pad 20px; app sections gap 16px; marketing sections 80 to 112px.
+- **Radius:** `sm 6px` (chips, kbd), `md 10px` (inputs), `lg 20px` (cards), `xl 28px` (the page
+  frame, media panels); buttons and badges are full pills.
+- **Elevation:** white cards on the light-grey frame need no border or shadow. `shadow-frame` lifts
+  the whole page off the canvas; `shadow-overlay` is for menus, dialogs and toasts; the landing
+  page's floating cards use a soft long shadow.
 
 ## 5. Motion
 
-| Token | Value | Used for |
-|---|---|---|
-| `duration-fast` | 120ms | Hover, press, colour changes |
-| `duration-base` | 180ms | Menus, popovers, tooltips (fade + 4px rise) |
-| `duration-slow` | 240ms | Dialogs, sheets (slide) |
-| `ease-out` | cubic-bezier(0.2, 0, 0, 1) | Entering |
+| What | How |
+|---|---|
+| Headline words | blur 8px → 0, fade, 6px rise, 45ms stagger, 600ms, ease `[0.22, 1, 0.36, 1]` |
+| Hero fan | spring (stiffness 70, damping 16) from a stacked pile to the fan, staggered from the centre out; hover lifts a card |
+| Floating chips | slow vertical bob (4 to 5 s loop) |
+| Section reveals | fade + 24px rise + blur, once, when 15% visible |
+| Statement sentence | words fill from 18% to 100% opacity, tied to scroll position |
+| Marquees | linear, 30 to 40 s per loop |
+| Video carousel | crossfade + slight scale-down, 9 s per slide with a progress bar |
+| App UI | 120 to 240ms state changes and overlays only |
 
-**What animates:** overlays entering/leaving, hover/press states, skeleton shimmer, the copy
-button's "Copied" state. **What never animates:** numbers (no count-up tickers), charts (no
-draw-in), layout (no reflow animations), page transitions. *Why:* an instrument shouldn't
-perform; animated numbers suggest precision and drama we don't have. `prefers-reduced-motion`
-disables all of it.
+**Never animate** numbers (no count-ups), chart data (no draw-ins) or layout. All of it switches
+off with `prefers-reduced-motion` (and video never loads then).
 
 ## 6. Layers
 
@@ -272,7 +290,7 @@ whatever is behind the logo and the mark works on paper, white, ink, photos or t
 
 All PNG/ICO files are generated from the SVGs by `node scripts/gen-brand.mjs`.
 
-**Wordmark:** "Recommendr" set in Newsreader (weight 540, optical size 24) with the font's own
+**Wordmark:** "Recommendr" set in Geist (weight 600, −0.035em tracking) with the font's own
 kerning (shaped with HarfBuzz), +0.004em tracking, outlined to paths so it renders identically
 without the font. The cap height matches the mark's body.
 
@@ -289,9 +307,15 @@ full lockup).
 - Don't stretch, squash or re-space the lockup.
 - Never place the lime band on a lime background.
 
+## Assistant logos
+
+ChatGPT/OpenAI, Gemini, Perplexity and Claude marks come from Simple Icons (CC0 SVGs,
+`web/public/logos/`, component `EngineLogo`). They are shown in one colour (`currentColor`) only
+to name the assistants we query; they're trademarks of their owners and imply no endorsement.
+
 ## 9. Copy voice
 
-Plain, specific, slightly dry. Numbers over adjectives.
+Short. One line per idea; if nobody would read it, cut it. Plain, specific, numbers over adjectives.
 
 - Hero: *"Ask ChatGPT about your industry. See if it mentions you."*
 - Proof: *"We asked ChatGPT 'best biryani in Islamabad' 10 times. You appeared 3 times. Your top
