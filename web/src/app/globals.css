@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* Placeholder tokens only. The real design system (type, color, spacing) lands in phase 1b. */
+:root {
+  --background: #fbfbfa;
+  --foreground: #1a1a19;
+  --muted: #6b6b66;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #121211;
+    --foreground: #ecece9;
+    --muted: #9a9a94;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
