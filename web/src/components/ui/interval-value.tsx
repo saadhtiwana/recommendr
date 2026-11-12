@@ -33,7 +33,7 @@ export function IntervalValue({
   const exact = `${formatPct(p)}, 95% interval ${formatPct(lo)} to ${formatPct(hi)}${n ? `, ${n} answers` : ""}`;
   return (
     <span className={cn("inline-flex flex-col gap-1", className)} title={exact}>
-      <span className={cn("font-mono tabular leading-none text-ink", SIZE[size])} aria-hidden>
+      <span className={cn("tabular leading-none text-ink", SIZE[size])} aria-hidden>
         {formatPct(p)}
         <span className="ml-1 text-[0.72em] text-ink-3">±{Math.round(half * 100)}</span>
       </span>

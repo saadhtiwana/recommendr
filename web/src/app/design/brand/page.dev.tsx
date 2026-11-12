@@ -73,11 +73,11 @@ const SERIES: { label: string; hex: string; width: number; dash?: string; note: 
 
 const TYPE: { cls: string; name: string; spec: string; sample: string }[] = [
   { cls: "font-serif text-display", name: "display", spec: "Newsreader · 56/1.05 · −0.02em", sample: "See if it mentions you." },
-  { cls: "font-serif text-h1", name: "h1", spec: "Newsreader · 40/1.1", sample: "Dera Biryani House" },
+  { cls: "font-serif text-h1", name: "h1", spec: "Newsreader · 40/1.1", sample: "Corner Slice Pizza" },
   { cls: "font-serif text-h2", name: "h2", spec: "Newsreader · 30/1.2", sample: "Why them, not you" },
   { cls: "text-h3 font-semibold", name: "h3", spec: "Plex Sans 600 · 20/1.35", sample: "Visibility by engine" },
   { cls: "text-h4 font-semibold", name: "h4", spec: "Plex Sans 600 · 16/1.4", sample: "Top cited sources" },
-  { cls: "text-body", name: "body", spec: "Plex Sans · 15/1.55", sample: "We asked ChatGPT 'best biryani in Islamabad' 10 times. You appeared 3 times. Your top competitor appeared 8." },
+  { cls: "text-body", name: "body", spec: "Plex Sans · 15/1.55", sample: "We asked ChatGPT 'best pizza in Brooklyn' 10 times. You appeared 3 times. Your top competitor appeared 8." },
   { cls: "text-small", name: "small", spec: "Plex Sans · 13/1.45", sample: "Last run 9 Nov, 03:00 · next refresh in 3 days" },
   { cls: "text-micro uppercase", name: "micro", spec: "Plex Sans 500 · 11/1.3 · +0.06em", sample: "Mention rate" },
   { cls: "font-mono text-data tabular", name: "data", spec: "Plex Mono · 13/1.4 · tabular", sample: "33.0% ±4 · n=594 · gpt-5.1-search · 2026-11-09 03:14" },
@@ -218,8 +218,8 @@ export default function BrandPage() {
         <div className="mt-8 rounded-lg border border-line bg-surface p-5">
           <p className="text-micro uppercase text-ink-3">The highlighter in use</p>
           <p className="mt-2 max-w-prose">
-            For Sindhi-style biryani, <mark className="rounded-xs bg-lime px-0.5 text-lime-ink">Dera Biryani House</mark> is the name that
-            comes up most, ahead of <span className="underline decoration-teal decoration-2 underline-offset-4">Shahi Handi</span>.
+            For a classic New York slice, <mark className="rounded-xs bg-lime px-0.5 text-lime-ink">Corner Slice Pizza</mark> is the name that
+            comes up most, ahead of <span className="underline decoration-teal decoration-2 underline-offset-4">Fulton Ave Pizza</span>.
           </p>
         </div>
       </Section>

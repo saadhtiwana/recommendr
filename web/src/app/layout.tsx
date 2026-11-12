@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { geist, geistMono } from "@/lib/fonts";
+import { geistMono, jakarta } from "@/lib/fonts";
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable} h-full`}>
+    <html lang="en" className={`${jakarta.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full bg-bg text-ink">{children}</body>
     </html>
   );

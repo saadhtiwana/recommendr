@@ -99,38 +99,39 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 const JSON_LD = `{
   "@context": "https://schema.org",
   "@type": "Restaurant",
-  "name": "Dera Biryani House",
-  "servesCuisine": ["Pakistani", "Sindhi biryani"],
+  "name": "Corner Slice Pizza",
+  "servesCuisine": ["Pizza", "New York-style pizza"],
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Shop 14, G-9 Markaz",
-    "addressLocality": "Islamabad",
-    "addressCountry": "PK"
+    "streetAddress": "412 7th Ave",
+    "addressLocality": "Brooklyn",
+    "addressRegion": "NY",
+    "postalCode": "11215",
+    "addressCountry": "US"
   },
   "openingHoursSpecification": [
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday"], "opens": "12:00", "closes": "01:00" },
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday","Saturday","Sunday"], "opens": "12:00", "closes": "02:00" }
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], "opens": "11:00", "closes": "02:00" }
   ],
-  "amenityFeature": { "@type": "LocationFeatureSpecification", "name": "Private family rooms", "value": true }
+  "hasDeliveryMethod": "http://purl.org/goodrelations/v1#DeliveryModeOwnFleet"
 }`;
 
-const LLMS_TXT = `# Dera Biryani House
+const LLMS_TXT = `# Corner Slice Pizza
 
-> Sindhi-style biryani restaurant in G-9 Markaz, Islamabad. Dine-in, takeaway, delivery and catering.
+> New York-style pizzeria on 7th Ave in Park Slope, Brooklyn. Slices, whole pies, delivery and catering.
 
 ## Key facts
-- Address: Shop 14, G-9 Markaz, Islamabad (moved from F-10 in March 2025)
-- Hours: 12 pm to 1 am; Friday to Sunday until 2 am
-- Private dining: two family rooms, up to 14 guests, book by phone
-- Halal certified (PHA certificate 2026-0412)
+- Address: 412 7th Ave, Brooklyn, NY 11215 (moved from 5th Ave in March 2025)
+- Hours: 11 am to 2 am every day
+- Delivery: across Brooklyn until 2 am
+- Catering: office parties and groups of 20+
 
 ## Pages
-- [Menu](https://derabiryani.pk/menu)
-- [Catering for 20 to 500 guests](https://derabiryani.pk/catering)
-- [Private dining](https://derabiryani.pk/private-dining)`;
+- [Menu](https://cornerslice.nyc/menu)
+- [Catering](https://cornerslice.nyc/catering)
+- [Delivery](https://cornerslice.nyc/delivery)`;
 
 type QRow = Question & { rate: ReturnType<typeof wilson> };
-const tableRows: QRow[] = [...questions, ...questions.slice(0, 5).map((q) => ({ ...q, id: `${q.id}-b`, text: `${q.text} (Urdu)` }))].map((q) => ({
+const tableRows: QRow[] = [...questions, ...questions.slice(0, 5).map((q) => ({ ...q, id: `${q.id}-b`, text: `${q.text} (Spanish)` }))].map((q) => ({
   ...q,
   rate: wilson(q.x, q.n),
 }));
@@ -210,10 +211,10 @@ export function ComponentsGallery() {
 
               <Section id="inputs" title="Inputs">
                 <div className="grid gap-5 md:grid-cols-2">
-                  <Field label="Business name" hint="As customers would type it."><Input placeholder="Dera Biryani House" /></Field>
-                  <Field label="Website" error="Enter a domain like derabiryani.pk"><Input defaultValue="derabiryani" /></Field>
-                  <Field label="City"><Input defaultValue="Islamabad" disabled /></Field>
-                  <Field label="Verified fact" hint="We check AI answers against this."><Textarea rows={3} defaultValue="Two private family rooms, up to 14 guests, bookable by phone." /></Field>
+                  <Field label="Business name" hint="As customers would type it."><Input placeholder="Corner Slice Pizza" /></Field>
+                  <Field label="Website" error="Enter a domain like cornerslice.nyc"><Input defaultValue="cornerslice" /></Field>
+                  <Field label="City"><Input defaultValue="Brooklyn, NY" disabled /></Field>
+                  <Field label="Verified fact" hint="We check AI answers against this."><Textarea rows={3} defaultValue="Delivers across Brooklyn until 2 am." /></Field>
                 </div>
               </Section>
 
@@ -226,8 +227,8 @@ export function ComponentsGallery() {
                     <Combobox
                       placeholder="Choose a category"
                       options={[
-                        { value: "biryani", label: "Biryani restaurant", hint: "1,240 businesses" },
-                        { value: "pakistani", label: "Pakistani restaurant" },
+                        { value: "pizzeria", label: "Pizzeria", hint: "1,240 businesses" },
+                        { value: "italian", label: "Italian restaurant" },
                         { value: "dentist", label: "Dentist" },
                         { value: "crm", label: "CRM software" },
                         { value: "physio", label: "Physiotherapy clinic" },
@@ -286,9 +287,9 @@ export function ComponentsGallery() {
                 </Row>
                 <Row label="engine"><>{ENGINE_ORDER.map((e) => <EngineLabel key={e} engine={e} model={engineStats[e].model} />)}</></Row>
                 <Row label="sparkline">
-                  <Sparkline values={questions[1]!.trend} label="Sindhi biryani prompt, 8 weeks" />
-                  <Sparkline values={questions[0]!.trend} dot label="Best biryani prompt, 8 weeks" />
-                  <Sparkline values={questions[5]!.trend} width={120} height={28} label="Cheap biryani prompt, 8 weeks" />
+                  <Sparkline values={questions[1]!.trend} label="Classic slice prompt, 8 weeks" />
+                  <Sparkline values={questions[0]!.trend} dot label="Best pizza prompt, 8 weeks" />
+                  <Sparkline values={questions[5]!.trend} width={120} height={28} label="Cheap pizza prompt, 8 weeks" />
                 </Row>
               </Section>
 
@@ -319,7 +320,7 @@ export function ComponentsGallery() {
                   ))}
                 </div>
                 <Panel title="Citation footnotes on their own">
-                  <p className="text-small">Gemini says Dera is open until 11 pm<CitationRef n={1} idPrefix="demo" /> and located in F-10<CitationRef n={2} idPrefix="demo" />.</p>
+                  <p className="text-small">Gemini says Corner Slice is open until 11 pm<CitationRef n={1} idPrefix="demo" /> and located on 5th Ave<CitationRef n={2} idPrefix="demo" />.</p>
                   <div className="mt-3"><SourceList idPrefix="demo" sources={answers[2]!.sources.slice(0, 2)} /></div>
                 </Panel>
               </Section>
@@ -332,7 +333,7 @@ export function ComponentsGallery() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild><Button>Prompt actions</Button></DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
-                      <DropdownMenuLabel>best biryani in Islamabad</DropdownMenuLabel>
+                      <DropdownMenuLabel>best pizza in Brooklyn</DropdownMenuLabel>
                       <DropdownMenuItem shortcut="R">Run now</DropdownMenuItem>
                       <DropdownMenuItem shortcut="E">Edit</DropdownMenuItem>
                       <DropdownMenuItem>Mark as private</DropdownMenuItem>
@@ -378,7 +379,7 @@ export function ComponentsGallery() {
                     <div className="space-y-3"><Skeleton className="h-4 w-48" /><SkeletonText lines={4} /><Skeleton className="h-3 w-32" /></div>
                   </Panel>
                   <Panel title="Loaded answer">
-                    <p className="text-small text-ink-2">Perplexity lists Shahi Handi, Karachi Biryani Centre and Lahori Degh, without you. Reviewers single out mutton biryani and consistent portions across branches.</p>
+                    <p className="text-small text-ink-2">Perplexity lists Fulton Ave Pizza, Bleecker Street Slice and Prospect Pie Co., without you. Reviewers single out the coal-oven crust and late-night delivery.</p>
                   </Panel>
                 </div>
               </Section>
@@ -396,15 +397,15 @@ export function ComponentsGallery() {
                     onDeny={() => setApproval("denied")}
                   />
                   <ApprovalCard
-                    title="Open a pull request on derabiryani.pk"
-                    description="Adds Restaurant JSON-LD and a private dining FAQ. You'll review the diff on GitHub before merging."
+                    title="Open a pull request on cornerslice.nyc"
+                    description="Adds Restaurant JSON-LD and a delivery FAQ. You'll review the diff on GitHub before merging."
                     action="publish"
-                    details={<p className="font-mono text-small">github.com/dera-hospitality/site · branch recommendr/fix-hours</p>}
+                    details={<p className="font-mono text-small">github.com/cornerslice/site · branch recommendr/fix-hours</p>}
                     state="pending"
                     onApprove={() => undefined}
                     onDeny={() => undefined}
                   />
-                  <ApprovalCard title="Run a check on 3 prompts" description="Approved by Ayesha Khan." action="spend" estimate={{ costUsd: 0.43, calls: 36 }} details={null} state="approved" onApprove={() => undefined} onDeny={() => undefined} />
+                  <ApprovalCard title="Run a check on 3 prompts" description="Approved by Maria Lopez." action="spend" estimate={{ costUsd: 0.43, calls: 36 }} details={null} state="approved" onApprove={() => undefined} onDeny={() => undefined} />
                   <ApprovalCard title="Publish llms.txt" description="Denied: wording needs review." action="publish" details={null} state="denied" onApprove={() => undefined} onDeny={() => undefined} />
                 </div>
                 <div className="grid gap-4 lg:grid-cols-2">
@@ -412,15 +413,15 @@ export function ComponentsGallery() {
                   <CodeBlock code={LLMS_TXT} language="txt" filename="llms.txt" />
                 </div>
                 <DiffView
-                  filename="app/private-dining/page.html"
+                  filename="app/delivery/page.html"
                   lines={[
                     { kind: "context", text: "<h2>Dine with us</h2>" },
-                    { kind: "del", text: "<p>Takeaway and delivery across Islamabad.</p>" },
-                    { kind: "add", text: "<p>Dine in, take away, or book one of our two private family rooms (up to 14 guests).</p>" },
-                    { kind: "add", text: '<a href="tel:+92511234567">Call to book: 051 123 4567</a>' },
+                    { kind: "del", text: "<p>Pickup only.</p>" },
+                    { kind: "add", text: "<p>Pickup, or delivery anywhere in Brooklyn until 2 am.</p>" },
+                    { kind: "add", text: '<a href="tel:+17185550142">Call to order: (718) 555-0142</a>' },
                     { kind: "context", text: "<h2>Opening hours</h2>" },
-                    { kind: "del", text: "<p>12 pm to 11 pm daily</p>" },
-                    { kind: "add", text: "<p>12 pm to 1 am; Friday to Sunday until 2 am</p>" },
+                    { kind: "del", text: "<p>11 am to 11 pm daily</p>" },
+                    { kind: "add", text: "<p>11 am to 2 am every day</p>" },
                   ]}
                 />
               </Section>
@@ -444,7 +445,7 @@ export function ComponentsGallery() {
                 <Panel title="Visibility by engine" description="Weekly mention rate with 95% intervals; dashed rules mark provider model changes.">
                   <LineCI
                     brand={brandSeries}
-                    brandLabel="Dera (all engines)"
+                    brandLabel="Corner Slice (all engines)"
                     series={ENGINE_ORDER.map((e) => ({ id: e, label: ENGINES[e].label, color: ENGINES[e].color, points: engineSeries[e], significant: engineStats[e].significant }))}
                     annotations={modelChanges.map((m) => ({ date: m.date, label: `${ENGINES[m.engine].label}: ${m.to}` }))}
                     height={300}
@@ -453,7 +454,7 @@ export function ComponentsGallery() {
                 <Panel title="Share of voice" description="Mentions of each business as a share of all tracked mentions.">
                   <SovBars
                     rows={shareOfVoice}
-                    entities={[{ key: "brand", label: "Dera Biryani House", color: "brand" }, ...competitors.map((c) => ({ key: c.id, label: c.name, color: c.color })), { key: "others", label: "Others", color: "stone" }]}
+                    entities={[{ key: "brand", label: "Corner Slice Pizza", color: "brand" }, ...competitors.map((c) => ({ key: c.id, label: c.name, color: c.color })), { key: "others", label: "Others", color: "stone" }]}
                   />
                 </Panel>
                 <Panel title="Prompts" description="Mention rate, change and 8-week trend.">

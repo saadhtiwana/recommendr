@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { Toast as RToast } from "radix-ui";
-import { ArrowDownRight, ArrowUpRight, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 type Tone = "neutral" | "up" | "down";
@@ -22,7 +22,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({ toast }), [toast]);
   return (
     <ToastContext.Provider value={value}>
-      <RToast.Provider swipeDirection="right" duration={5000}>
+      <RToast.Provider swipeDirection="right" duration={2600}>
         {children}
         {items.map((t) => (
           <RToast.Root
@@ -30,20 +30,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             onOpenChange={(open) => {
               if (!open) setItems((prev) => prev.filter((x) => x.id !== t.id));
             }}
-            className="flex w-full animate-pop-in items-start gap-3 rounded-md border border-line bg-surface p-3 shadow-overlay"
+            className="pointer-events-auto flex animate-pop-in items-center gap-2.5 rounded-full bg-ink py-2.5 pr-5 pl-3 text-white shadow-overlay"
           >
-            {t.tone === "up" ? <ArrowUpRight size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-up" aria-hidden /> : null}
-            {t.tone === "down" ? <ArrowDownRight size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-down" aria-hidden /> : null}
-            <div className="min-w-0 flex-1">
-              <RToast.Title className="text-small font-medium text-ink">{t.title}</RToast.Title>
-              {t.description ? <RToast.Description className="mt-0.5 text-small text-ink-3">{t.description}</RToast.Description> : null}
-            </div>
-            <RToast.Close className={cn("rounded-sm p-0.5 text-ink-3 hover:bg-fill hover:text-ink focus-visible:focus-ring")} aria-label="Dismiss">
-              <X size={14} strokeWidth={1.75} />
-            </RToast.Close>
+            {/* one short line on a dark pill: confirmation, not a message to read */}
+            <span className={cn("flex size-6 items-center justify-center rounded-full", t.tone === "down" ? "bg-down" : "bg-lime text-lime-ink")} aria-hidden>
+              {t.tone === "down" ? <X size={13} strokeWidth={2.6} /> : <Check size={13} strokeWidth={2.6} />}
+            </span>
+            <RToast.Title className="text-small font-semibold">{t.title}</RToast.Title>
+            {t.description ? <RToast.Description className="sr-only">{t.description}</RToast.Description> : null}
           </RToast.Root>
         ))}
-        <RToast.Viewport className="fixed right-4 bottom-4 z-toast flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none" />
+        <RToast.Viewport className="pointer-events-none fixed bottom-6 left-1/2 z-toast flex -translate-x-1/2 flex-col items-center gap-2 outline-none" />
       </RToast.Provider>
     </ToastContext.Provider>
   );

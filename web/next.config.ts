@@ -7,6 +7,8 @@ const isProductionBuild = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
   pageExtensions: isProductionBuild ? ["tsx", "ts"] : ["dev.tsx", "tsx", "ts"],
+  // the floating dev badge sits on top of the sidebar's user row in previews
+  devIndicators: false,
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

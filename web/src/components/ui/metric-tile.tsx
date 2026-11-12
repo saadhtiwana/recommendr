@@ -19,7 +19,7 @@ export function MetricTile({
 }) {
   return (
     <div className={cn("flex min-h-[124px] flex-col gap-3 rounded-md border border-line bg-surface p-4", className)} aria-busy={loading || undefined}>
-      <div className="text-micro font-medium uppercase text-ink-3">{label}</div>
+      <div className="text-small text-ink-3">{label}</div>
       {loading ? (
         <>
           <div className="h-8 w-28 animate-shimmer rounded-sm bg-[linear-gradient(90deg,var(--color-fill)_0%,var(--color-line)_50%,var(--color-fill)_100%)] bg-[length:200%_100%]" />

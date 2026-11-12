@@ -100,7 +100,7 @@ export function DataTable<T>({
               className={cn("border-b border-line last:border-b-0", onRowClick && "cursor-pointer hover:bg-fill focus-visible:bg-lime-soft focus-visible:text-lime-ink focus-visible:outline-none")}
             >
               {columns.map((c) => (
-                <td key={c.key} className={cn("px-3 text-ink", dense ? "h-9" : "h-12", c.align === "right" && "text-right font-mono text-data tabular")}>
+                <td key={c.key} className={cn("px-3 text-ink", dense ? "h-9" : "h-12", c.align === "right" && "text-right tabular")}>
                   {c.cell(row)}
                 </td>
               ))}

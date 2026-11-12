@@ -25,10 +25,9 @@ export function Delta({
   const shown = `${value > 0 ? "+" : value < 0 ? "−" : "±"}${Math.abs(value).toFixed(1)}${unit === "%" ? "%" : ""}`;
   const label = `${dir === "flat" ? "no change" : dir} ${Math.abs(value).toFixed(1)} ${unit === "%" ? "percent" : "points"}, ${significant ? "significant" : "not significant"}`;
   return (
-    <span className={cn("inline-flex items-center gap-0.5 font-mono tabular", size === "md" ? "text-body" : "text-data", tone, !significant && "font-normal", significant && "font-medium", className)}>
+    <span className={cn("inline-flex items-center gap-0.5 tabular", size === "md" ? "text-body" : "text-small", tone, significant ? "font-medium" : "font-normal", className)}>
       <Icon aria-hidden className={size === "md" ? "size-4" : "size-3.5"} strokeWidth={2} />
       <span aria-hidden>{shown}</span>
-      {unit === "pts" && <span aria-hidden className="text-micro tracking-normal">pts</span>}
       <span className="sr-only">{label}</span>
     </span>
   );

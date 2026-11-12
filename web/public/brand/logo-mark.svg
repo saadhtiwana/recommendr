@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <title>Recommendr</title>
-  <defs><mask id="rm-gap" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32"><rect width="32" height="32" fill="#fff"/><path d="M1.74 19.53 28.54 10.93 30.26 16.27 3.46 24.87Z" fill="#000"/></mask></defs>
-  <path d="M7 26V12.6C7 7.6 10.5 4.6 15.5 4.6h9.7c2.4 0 3.8 1.6 3.8 3.8 0 2.4-1.6 4-4 4h-9.3c-1.6 0-2.5 1-2.5 2.5V26c0 1.8-1.4 3-3.1 3S7 27.8 7 26Z" fill="#111311" mask="url(#rm-gap)"/>
-  <path d="M2.05 20.48 28.85 11.88 29.95 15.32 3.15 23.92Z" fill="#D6F69A"/>
+  <defs><mask id="rm" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32"><rect width="32" height="32" fill="#fff"/><circle cx="5" cy="27" r="2.6" fill="#000"/></mask></defs>
+  <path mask="url(#rm)" d="M5.08 25.8L3 4.09A23 23 0 0 1 10.17 4.59ZM5.54 25.93L12.11 5.13A23 23 0 0 1 18.19 8.16ZM5.9 26.2L19.78 9.38A23 23 0 0 1 24.29 14.47ZM6.12 26.58L25.31 16.2A23 23 0 0 1 27.41 21.83Z" fill="#111311" stroke="#111311" stroke-width="1.1" stroke-linejoin="round"/>
+  <path mask="url(#rm)" d="M6.2 26.95L28.7 23.25A24 24 0 0 1 28.94 28.67Z" fill="#D6F69A" stroke="#111311" stroke-width="1.1" stroke-linejoin="round"/>
 </svg>

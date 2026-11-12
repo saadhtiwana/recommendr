@@ -26,7 +26,7 @@ export function Panel({
       {hasHeader ? (
         <header className="flex items-start justify-between gap-4 px-5 pt-5">
           <div className="min-w-0">
-            {title !== undefined ? <h3 className="text-body font-medium text-ink-3">{title}</h3> : null}
+            {title !== undefined ? <h3 className="text-body font-semibold text-ink">{title}</h3> : null}
             {description !== undefined ? <p className="mt-1 text-small text-ink-2">{description}</p> : null}
           </div>
           {actions !== undefined ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}

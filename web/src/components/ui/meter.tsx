@@ -24,7 +24,7 @@ export function Meter({
     <div className={cn("flex flex-col gap-1.5", className)}>
       <div className="flex items-baseline justify-between gap-3 text-small">
         <span className="text-ink-2">{label}</span>
-        <span className={cn("font-mono tabular", warn ? "text-down" : "text-ink-3")}>
+        <span className={cn("tabular", warn ? "text-down" : "text-ink-3")}>
           {format(used)} / {format(limit)} {unit}
           {warn && <span className="ml-1">({Math.round(ratio * 100)}%)</span>}
         </span>

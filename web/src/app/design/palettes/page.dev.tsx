@@ -75,8 +75,8 @@ function Specimen({ p }: { p: Spec }) {
       <div className="mt-5 rounded-md border p-4" style={{ background: p.card, borderColor: p.line }}>
         <p className="font-mono text-micro uppercase" style={{ color: p.muted }}>ChatGPT · gpt-5.1-search · sample 3</p>
         <p className="mt-2 text-small leading-relaxed">
-          For biryani in Islamabad, locals point to Shahi Handi. <span style={p.mark}>Dera Biryani House</span> is a strong choice
-          if you want Sindhi-style biryani<sup style={{ color: p.muted }}>2</sup>.
+          For pizza in Brooklyn, locals point to Fulton Ave Pizza. <span style={p.mark}>Corner Slice Pizza</span> is a strong choice
+          if you want a classic New York slice<sup style={{ color: p.muted }}>2</sup>.
         </p>
       </div>
 

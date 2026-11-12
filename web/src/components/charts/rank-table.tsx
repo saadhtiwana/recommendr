@@ -40,7 +40,7 @@ export function RankTable({ rows, onRowClick, maxHeight }: { rows: Question[]; o
       header: "Avg. position",
       align: "right",
       width: "6.5rem",
-      cell: (q) => <span className="font-mono tabular text-ink">{q.rank === null ? <span className="text-ink-3">—</span> : q.rank.toFixed(1)}</span>,
+      cell: (q) => <span className="tabular text-ink">{q.rank === null ? <span className="text-ink-3">—</span> : q.rank.toFixed(1)}</span>,
       sortValue: (q) => q.rank ?? 99,
     },
     {

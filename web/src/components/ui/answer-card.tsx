@@ -3,10 +3,8 @@ import { cn } from "@/lib/cn";
 import type { Answer, Competitor } from "@/lib/mock";
 import { DECORATION_CLASS, ENGINES } from "@/lib/palette";
 import { CitationRef, SourceList } from "./citation";
-import { EngineLabel } from "./engine-label";
+import { EngineLogo } from "@/components/brand/engine-logo";
 
-const time = (iso: string) =>
-  new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Karachi" }).format(new Date(iso));
 
 /**
  * One sampled AI answer, shown as evidence. The brand is marked like a highlighter pen (lime
@@ -33,15 +31,14 @@ export function AnswerCard({
   return (
     <article className={cn("flex flex-col rounded-md border border-line bg-surface", className)} aria-label={`${ENGINES[answer.engine].label} answer`}>
       <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-4 py-2.5">
-        <EngineLabel engine={answer.engine} model={answer.model} />
-        <span className="font-mono text-micro tracking-normal text-ink-3 tabular">sample #{answer.sampleIndex + 1}</span>
-        <time dateTime={answer.sampledAtIso} className="font-mono text-micro tracking-normal text-ink-3 tabular">
-          {time(answer.sampledAtIso)} PKT
-        </time>
+        <span className="flex items-center gap-2 text-small font-medium text-ink">
+          <EngineLogo engine={answer.engine} size={16} />
+          {ENGINES[answer.engine].label}
+        </span>
         <span className="ml-auto text-small">
           {answer.brandRank ? (
             <span className="text-ink">
-              You: <span className="font-mono tabular">#{answer.brandRank}</span>
+              You: <span className="tabular">#{answer.brandRank}</span>
             </span>
           ) : (
             <span className="text-ink-3">You: not mentioned</span>

@@ -17,7 +17,7 @@ export default function OnboardingPreview() {
           </div>
         </header>
         <main className="mx-auto max-w-[1100px] px-5 py-8 md:px-8 lg:py-12">
-          <h1 className="mb-8 font-serif text-h1">Create a project</h1>
+          <h1 className="mx-auto mb-8 max-w-xl font-serif text-h1">Create a project</h1>
           <OnboardingFlow />
         </main>
       <PreviewFooter />

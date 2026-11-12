@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <title>Recommendr</title>
+  <defs><mask id="rmw" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32"><rect width="32" height="32" fill="#fff"/><circle cx="5" cy="27" r="2.6" fill="#000"/></mask></defs>
+  <path mask="url(#rmw)" d="M5.08 25.8L3 4.09A23 23 0 0 1 10.17 4.59ZM5.54 25.93L12.11 5.13A23 23 0 0 1 18.19 8.16ZM5.9 26.2L19.78 9.38A23 23 0 0 1 24.29 14.47ZM6.12 26.58L25.31 16.2A23 23 0 0 1 27.41 21.83Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.1" stroke-linejoin="round"/>
+  <path mask="url(#rmw)" d="M6.2 26.95L28.7 23.25A24 24 0 0 1 28.94 28.67Z" fill="#D6F69A" stroke="#D6F69A" stroke-width="1.1" stroke-linejoin="round"/>
+</svg>

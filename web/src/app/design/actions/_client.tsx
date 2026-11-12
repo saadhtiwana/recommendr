@@ -1,264 +1,246 @@
 "use client";
 
-import { Check, ChevronDown, ChevronRight, Globe2, Home } from "lucide-react";
+import { Check, ChevronDown, Clock, FileText, Globe, MessagesSquare, Newspaper, Store, Truck } from "lucide-react";
+import { motion } from "motion/react";
 import { useState } from "react";
 import { AppShell } from "@/components/app/app-shell";
-import { AnswerCard } from "@/components/ui/answer-card";
-import { ApprovalCard } from "@/components/ui/approval-card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Panel } from "@/components/ui/card";
 import { CodeBlock } from "@/components/ui/code-block";
 import { DiffView, type DiffLine } from "@/components/ui/diff-view";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { actions, answers, competitors, falseFacts, type Action } from "@/lib/mock";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { cn } from "@/lib/cn";
+import { actions, type Action } from "@/lib/mock";
 
-const IMPACT_TONE = { High: "lime", Medium: "neutral", Low: "muted" } as const;
-const STATUS: Record<string, "New" | "In progress" | "Done"> = { a1: "New", a2: "In progress", a3: "New", a4: "New", a5: "Done", a6: "New", a7: "New" };
-
-const FAQ_JSONLD = `{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Does Dera Biryani House have private dining rooms?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. We have two private family rooms in G-9 Markaz, seating up to 14 guests each. Book by phone on 051 2345 678 at least a day ahead."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I book Dera Biryani House for a family event?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Private rooms can be booked for birthdays and family dinners from 12 pm to 1 am, with a set biryani menu from Rs 2,400 per person."
-      }
-    }
-  ]
-}`;
-
-const FAQ_HTML = `<section id="private-dining" aria-labelledby="private-dining-title">
-  <h2 id="private-dining-title">Private dining</h2>
-  <p>Two private family rooms, up to 14 guests each, in G-9 Markaz.
-     Book by phone on <a href="tel:+92512345678">051 2345 678</a>.</p>
-  <details>
-    <summary>Do you have private dining rooms?</summary>
-    <p>Yes. Two private family rooms seating up to 14 guests each.</p>
-  </details>
-  <details>
-    <summary>Can I book a room for a family event?</summary>
-    <p>Yes, from 12 pm to 1 am, with a set biryani menu from Rs 2,400 per person.</p>
-  </details>
-</section>`;
+type Fix = { file: string; lang: "json" | "html" | "txt"; code: string; diff?: DiffLine[] };
 
 const RESTAURANT_JSONLD = `{
   "@context": "https://schema.org",
   "@type": "Restaurant",
-  "name": "Dera Biryani House",
-  "url": "https://derabiryani.pk",
-  "servesCuisine": ["Pakistani", "Sindhi biryani"],
-  "priceRange": "Rs 800–2,400",
-  "telephone": "+92-51-2345678",
+  "name": "Corner Slice Pizza",
+  "url": "https://cornerslice.nyc",
+  "telephone": "+1-718-555-0142",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Shop 14, G-9 Markaz",
-    "addressLocality": "Islamabad",
-    "postalCode": "44090",
-    "addressCountry": "PK"
+    "streetAddress": "412 7th Ave",
+    "addressLocality": "Brooklyn",
+    "addressRegion": "NY",
+    "postalCode": "11215",
+    "addressCountry": "US"
   },
-  "openingHoursSpecification": [
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "12:00", "closes": "01:00" },
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday", "Sunday"], "opens": "12:00", "closes": "02:00" }
-  ],
-  "acceptsReservations": "True"
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "11:00",
+    "closes": "02:00"
+  }
 }`;
 
-const ABOUT_DIFF: DiffLine[] = [
-  { kind: "context", text: "<h1>About Dera Biryani House</h1>" },
-  { kind: "context", text: "<p>Sindhi-style biryani in Islamabad since 2016.</p>" },
-  { kind: "del", text: "<p>Visit us in F-10 Markaz, open 12 pm to 11 pm.</p>" },
-  { kind: "add", text: "<p>Visit us in G-9 Markaz (moved from F-10 in March 2025).</p>" },
-  { kind: "add", text: "<p>Open 12 pm to 1 am; Friday to Sunday until 2 am.</p>" },
-  { kind: "add", text: '<p>Two private family rooms for up to 14 guests. <a href="#private-dining">Book a room</a>.</p>' },
-  { kind: "context", text: '<a href="/menu">See the menu</a>' },
-];
+/** Fixes for owned actions open a pull request; earned ones are drafts you send yourself. */
+const FIXES: Record<string, Fix> = {
+  a1: {
+    file: "src/pages/index.html",
+    lang: "html",
+    code: `<section id="delivery">
+  <h2>Delivery</h2>
+  <p>We deliver anywhere in Brooklyn, 11 am to 2 am every day.</p>
+  <a href="/order">Order delivery</a>
+</section>`,
+    diff: [
+      { kind: "context", text: "<h1>Corner Slice Pizza</h1>" },
+      { kind: "del", text: "<p>Pickup on 7th Ave.</p>" },
+      { kind: "add", text: "<p>Pickup on 7th Ave, or delivery anywhere in Brooklyn until 2 am.</p>" },
+      { kind: "add", text: '<a href="#delivery">Order delivery</a>' },
+    ],
+  },
+  a2: { file: "public/restaurant.jsonld", lang: "json", code: RESTAURANT_JSONLD },
+  a3: {
+    file: "email to brooklynbites.com",
+    lang: "txt",
+    code: `Hi Brooklyn Bites team,
 
-function ActionRow({ a, rank, expanded, onToggle }: { a: Action; rank: number; expanded: boolean; onToggle: () => void }) {
-  const status = STATUS[a.id] ?? "New";
+Thanks for your best pizza in Brooklyn list. We're Corner Slice Pizza on 7th Ave
+in Park Slope: classic New York slices, open until 2 am, with delivery
+across Brooklyn. Would you consider us for the next update?
+
+Happy to host you for a slice any time.
+Maria Lopez, Corner Slice Pizza`,
+  },
+  a4: {
+    file: "public/robots.txt",
+    lang: "txt",
+    code: `User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /`,
+    diff: [
+      { kind: "del", text: "User-agent: OAI-SearchBot" },
+      { kind: "del", text: "Disallow: /" },
+      { kind: "del", text: "User-agent: PerplexityBot" },
+      { kind: "del", text: "Disallow: /" },
+      { kind: "context", text: "User-agent: *" },
+      { kind: "context", text: "Allow: /" },
+    ],
+  },
+  a5: { file: "DoorDash hours", lang: "txt", code: "Monday to Sunday: 11:00 am to 2:00 am" },
+  a6: {
+    file: "public/llms.txt",
+    lang: "txt",
+    code: `# Corner Slice Pizza
+
+> New York-style pizzeria at 412 7th Ave, Brooklyn, NY. Open 11 am to 2 am daily.
+
+- [Menu](https://cornerslice.nyc/menu)
+- [Delivery](https://cornerslice.nyc/delivery)
+- [Catering](https://cornerslice.nyc/catering)`,
+  },
+  a7: {
+    file: "reply on r/brooklyn",
+    lang: "txt",
+    code: "Owner of Corner Slice here: we're on 7th Ave and deliver across Brooklyn until 2 am. Come by for a plain slice.",
+  },
+};
+
+// One round, tinted icon per fix so the list scans at a glance.
+const LOOK: Record<string, { icon: typeof Truck; tint: string }> = {
+  a1: { icon: Truck, tint: "bg-lime text-lime-ink" },
+  a2: { icon: Clock, tint: "bg-[#E6F0FB] text-[#21579A]" },
+  a3: { icon: Newspaper, tint: "bg-[#FBF0DD] text-[#7A5310]" },
+  a4: { icon: Globe, tint: "bg-[#E3F1F1] text-[#14605F]" },
+  a5: { icon: Store, tint: "bg-[#FBE7E9] text-[#8E2A33]" },
+  a6: { icon: FileText, tint: "bg-fill text-ink" },
+  a7: { icon: MessagesSquare, tint: "bg-fill text-ink" },
+};
+
+function FixIcon({ id, size = 48 }: { id: string; size?: number }) {
+  const look = LOOK[id] ?? { icon: FileText, tint: "bg-fill text-ink" };
+  const Icon = look.icon;
   return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-expanded={expanded}
-      className={cn(
-        "grid w-full grid-cols-[24px_1fr] gap-3 px-4 py-3 text-left hover:bg-fill sm:grid-cols-[24px_1fr_auto]",
-        expanded && "bg-fill",
-      )}
+    <span className={cn("flex shrink-0 items-center justify-center rounded-full", look.tint)} style={{ width: size, height: size }}>
+      <Icon size={Math.round(size * 0.42)} strokeWidth={1.8} aria-hidden />
+    </span>
+  );
+}
+
+/** Impact as three circles: ●●● high, ●●○ medium, ●○○ low. */
+function ImpactDots({ impact }: { impact: Action["impact"] }) {
+  const n = impact === "High" ? 3 : impact === "Medium" ? 2 : 1;
+  return (
+    <span className="flex items-center gap-2 text-small font-semibold text-ink-2" aria-label={`${impact} impact`}>
+      <span className="flex gap-1" aria-hidden>
+        {[0, 1, 2].map((i) => (
+          <span key={i} className={cn("size-2.5 rounded-full", i < n ? "bg-ink" : "bg-line-strong")} />
+        ))}
+      </span>
+      {impact} impact
+    </span>
+  );
+}
+
+/** Expected effect in plain words: "+4 to +11 pts on 3 questions" -> "Could add 4 to 11 points on 3 questions". */
+function outcome(lift: string): string {
+  if (!/^\+\d/.test(lift)) return lift === "Small" ? "A small boost" : lift === "Uncertain" ? "Hard to predict, but cheap to try" : lift;
+  return `Could add ${lift.replace(/\+/g, "").replace(/ pts\b/, " points")}`;
+}
+
+function FixSheet({ a }: { a: Action }) {
+  const [opened, setOpened] = useState(false);
+  const [showCode, setShowCode] = useState(false);
+  const fix = FIXES[a.id]!;
+  const owned = a.kind === "owned";
+  return (
+    <SheetContent
+      title={a.title}
+      footer={
+        opened ? (
+          <p role="status" className="inline-flex items-center gap-2 text-body font-semibold text-ink">
+            <Check size={16} aria-hidden /> {owned ? "Sent to your website" : "Marked as done"}
+          </p>
+        ) : (
+          <Button variant="accent" size="lg" className="w-full" onClick={() => setOpened(true)}>
+            {owned ? "Add it to my site" : "Mark as done"}
+          </Button>
+        )
+      }
     >
-      <span className="font-mono text-small tabular text-ink-3">{rank}</span>
-      <span className="min-w-0">
-        <span className="flex items-start gap-1.5">
-          {expanded ? <ChevronDown size={16} className="mt-0.5 shrink-0" aria-hidden /> : <ChevronRight size={16} className="mt-0.5 shrink-0 text-ink-3" aria-hidden />}
-          <span className="text-small font-medium">{a.title}</span>
-        </span>
-        <span className="mt-1 block pl-5 text-small text-ink-3">{a.evidence}</span>
-        <span className="mt-2 flex flex-wrap gap-1.5 pl-5">
-          <Badge tone={IMPACT_TONE[a.impact]}>{a.impact} impact</Badge>
-          <Badge tone="outline">{a.effort} effort</Badge>
-          <Badge tone="muted">
-            {a.questions} prompt{a.questions === 1 ? "" : "s"}
-          </Badge>
-        </span>
-      </span>
-      <span className="col-start-2 flex flex-col gap-1 pl-5 text-small sm:col-start-auto sm:items-end sm:pl-0">
-        <span className="font-mono tabular text-ink">{a.expectedLift}</span>
-        <span className={cn("inline-flex items-center gap-1", status === "Done" ? "text-up" : "text-ink-3")}>
-          {status === "Done" ? <Check size={12} aria-hidden /> : null}
-          {status}
-        </span>
-      </span>
-    </button>
-  );
-}
-
-function ExpandedA1() {
-  const [approval, setApproval] = useState<"pending" | "approved" | "denied">("pending");
-  const evidence = answers.find((x) => x.id === "ans_c07d")!;
-  const ff = falseFacts[0]!;
-  return (
-    <div className="space-y-4 border-t border-line bg-surface px-4 py-5">
-      <div className="grid gap-4 xl:grid-cols-2">
-        <div className="min-w-0">
-          <h3 className="text-micro uppercase text-ink-3">Evidence</h3>
-          <p className="mt-1 text-small text-ink-2">
-            <q>{ff.claim}</q> appears in <span className="font-mono tabular">{ff.seen}</span> of{" "}
-            <span className="font-mono tabular">{ff.of}</span> answers to family-dining prompts. The cited source is a 2024 guide that predates your
-            private rooms.
-          </p>
-          <AnswerCard className="mt-3" answer={evidence} question="family restaurant with biryani and private rooms Islamabad" competitors={competitors} />
+      <div className="space-y-6">
+        <div className="flex items-center gap-4 rounded-[20px] bg-bg p-5">
+          <FixIcon id={a.id} />
+          <p className="text-body font-semibold text-ink">{a.evidence}</p>
         </div>
-        <div className="min-w-0 space-y-3">
-          <h3 className="text-micro uppercase text-ink-3">Generated fix</h3>
-          <p className="text-small text-ink-2">
-            Add a <strong className="font-medium">Private dining</strong> section to your About page, with FAQ markup that AI crawlers can read. Review the
-            wording and phone number before publishing.
-          </p>
-          <Tabs defaultValue="jsonld">
-            <TabsList aria-label="Fix format">
-              <TabsTrigger value="jsonld">FAQ JSON-LD</TabsTrigger>
-              <TabsTrigger value="html">HTML section</TabsTrigger>
-            </TabsList>
-            <TabsContent value="jsonld" className="mt-2">
-              <CodeBlock code={FAQ_JSONLD} language="json" filename="faq-private-dining.jsonld" />
-            </TabsContent>
-            <TabsContent value="html" className="mt-2">
-              <CodeBlock code={FAQ_HTML} language="html" filename="about.html (snippet)" />
-            </TabsContent>
-          </Tabs>
+        <div className="rounded-[20px] bg-lime-soft p-5">
+          <p className="text-small font-semibold text-lime-ink">After this fix</p>
+          <p className="mt-1.5 text-h4 font-bold text-lime-ink">{outcome(a.expectedLift)}</p>
         </div>
-      </div>
-      <div className="grid gap-4 xl:grid-cols-2">
-        <div className="min-w-0">
-          <h3 className="mb-2 text-micro uppercase text-ink-3">Proposed change</h3>
-          <DiffView filename="src/pages/about.html" lines={ABOUT_DIFF} />
-        </div>
-        <div className="min-w-0">
-          <h3 className="mb-2 text-micro uppercase text-ink-3">Publish</h3>
-          <ApprovalCard
-            action="publish"
-            title="Open a pull request on derabiryani-site"
-            description={
-              <>
-                Recommendr will open a pull request on <span className="font-mono">github.com/dera-hospitality/derabiryani-site</span> with the
-                change on the left. Nothing goes live until you merge it.
-              </>
-            }
-            details={
-              <ul className="space-y-1 text-small text-ink-2">
-                <li>Branch: <span className="font-mono">recommendr/private-dining-faq</span></li>
-                <li>Files: <span className="font-mono">src/pages/about.html</span> (+4 −1), <span className="font-mono">faq-private-dining.jsonld</span> (new)</li>
-                <li>After merge we re-check the 3 family-dining prompts and report the change with its interval.</li>
-              </ul>
-            }
-            state={approval}
-            onApprove={() => setApproval("approved")}
-            onDeny={() => setApproval("denied")}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ExpandedA2() {
-  return (
-    <div className="space-y-3 border-t border-line bg-surface px-4 py-5">
-      <p className="text-small text-ink-2">
-        Gemini states your hours as 12 pm to 11 pm in 14 of 40 answers, and Perplexity still places you in F-10. Add this to the{" "}
-        <span className="font-mono">&lt;head&gt;</span> of every page so engines read your hours and address from your own site.
-      </p>
-      <CodeBlock code={RESTAURANT_JSONLD} language="json" filename="restaurant.jsonld" />
-    </div>
-  );
-}
-
-function ActionList({ kind }: { kind: Action["kind"] }) {
-  const [open, setOpen] = useState<string | null>(kind === "owned" ? "a1" : null);
-  const list = actions.filter((a) => a.kind === kind);
-  return (
-    <ol className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
-      {list.map((a) => (
-        <li key={a.id}>
-          <ActionRow a={a} rank={actions.indexOf(a) + 1} expanded={open === a.id} onToggle={() => setOpen(open === a.id ? null : a.id)} />
-          {open === a.id && a.id === "a1" ? <ExpandedA1 /> : null}
-          {open === a.id && a.id === "a2" ? <ExpandedA2 /> : null}
-          {open === a.id && a.id !== "a1" && a.id !== "a2" ? (
-            <p className="border-t border-line px-4 py-4 text-small text-ink-3">Fix not generated yet. Generate a draft to review it here.</p>
+        <ImpactDots impact={a.impact} />
+        <div>
+          <button type="button" onClick={() => setShowCode((v) => !v)} aria-expanded={showCode} className="flex w-full items-center justify-between py-2 text-small font-semibold text-ink-2 hover:text-ink">
+            {showCode ? "Hide code" : "Show code for your web developer"}
+            <ChevronDown size={16} aria-hidden className={cn("transition-transform duration-300", showCode && "rotate-180")} />
+          </button>
+          {showCode ? (
+            <div className="space-y-4 pt-2">
+              <CodeBlock code={fix.code} language={fix.lang} filename={fix.file} />
+              {fix.diff ? <DiffView filename={fix.file} lines={fix.diff} /> : null}
+            </div>
           ) : null}
-        </li>
-      ))}
-    </ol>
+        </div>
+      </div>
+    </SheetContent>
   );
 }
 
 export function ActionsPreview() {
-  const owned = actions.filter((a) => a.kind === "owned").length;
+  const [open, setOpen] = useState<Action | null>(null);
+  const first = actions.filter((a) => a.impact === "High");
+  const rest = actions.filter((a) => a.impact !== "High");
   return (
-    <AppShell
-      active="actions"
-      title="Actions"
-      subtitle={`${actions.length} actions ranked by expected impact and effort. Lift ranges are estimates from similar prompts, not promises.`}
-      actions={<Button variant="secondary">Regenerate plan</Button>}
-    >
-      <Tabs defaultValue="owned">
-        <TabsList aria-label="Action type">
-          <TabsTrigger value="owned">
-            <Home size={14} aria-hidden className="mr-1.5" /> Owned · your site{" "}
-            <span className="ml-1 font-mono text-micro tabular text-ink-3">{owned}</span>
-          </TabsTrigger>
-          <TabsTrigger value="earned">
-            <Globe2 size={14} aria-hidden className="mr-1.5" /> Earned · other sites{" "}
-            <span className="ml-1 font-mono text-micro tabular text-ink-3">{actions.length - owned}</span>
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="owned" className="mt-3">
-          <ActionList kind="owned" />
-        </TabsContent>
-        <TabsContent value="earned" className="mt-3">
-          <ActionList kind="earned" />
-        </TabsContent>
-      </Tabs>
-      <div className="mt-6">
-        <Panel title="How actions are ranked" description="Impact: prompts affected × current gap × engines involved. Effort: what you can change yourself (owned) vs what needs someone else (earned).">
-          <p className="text-small text-ink-3">
-            Owned actions change your own site and listings, so they’re usually fastest. Earned actions need another site to mention you; we show
-            the evidence and draft the outreach, but can’t guarantee the result.
-          </p>
-        </Panel>
-      </div>
+    <AppShell active="actions" title="Fixes">
+      <h2 className="mb-3 text-h4 font-bold text-ink">Start here</h2>
+      <ul className="grid gap-3 lg:grid-cols-3">
+        {first.map((a, i) => (
+          <motion.li
+            key={a.id}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col gap-5 rounded-[24px] bg-surface p-6"
+          >
+            <FixIcon id={a.id} size={52} />
+            <div className="flex-1">
+              <p className="text-h4 font-bold leading-snug text-ink">{a.title}</p>
+              <p className="mt-2 text-small text-ink-3">{a.evidence}</p>
+            </div>
+            <ImpactDots impact={a.impact} />
+            <Button variant="accent" size="lg" className="w-full" onClick={() => setOpen(a)}>
+              Fix it
+            </Button>
+          </motion.li>
+        ))}
+      </ul>
+
+      <h2 className="mb-3 mt-10 text-h4 font-bold text-ink">More fixes</h2>
+      <ul className="space-y-2.5">
+        {rest.map((a) => (
+          <li key={a.id} className="flex items-center gap-4 rounded-[20px] bg-surface p-4">
+            <FixIcon id={a.id} size={42} />
+            <div className="min-w-0 flex-1">
+              <p className="text-body font-semibold text-ink">{a.title}</p>
+              <p className="truncate text-small text-ink-3">{a.evidence}</p>
+            </div>
+            <span className="hidden sm:block">
+              <ImpactDots impact={a.impact} />
+            </span>
+            <Button variant="secondary" onClick={() => setOpen(a)}>
+              Fix it
+            </Button>
+          </li>
+        ))}
+      </ul>
+
+      <Sheet open={open !== null} onOpenChange={(o) => !o && setOpen(null)}>
+        {open ? <FixSheet key={open.id} a={open} /> : null}
+      </Sheet>
     </AppShell>
   );
 }

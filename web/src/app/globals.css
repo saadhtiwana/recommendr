@@ -55,23 +55,23 @@
 
   /* type: families come from next/font CSS variables set on <html> */
   /* one grotesk family: "serif" is kept as an alias so headline classes keep working */
-  --font-serif: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
 
   /* type scale: [size, line-height]; display/h1/h2 are serif, the rest sans */
   --text-hero: 5.5rem;
   --text-hero--line-height: 0.98;
-  --text-hero--letter-spacing: -0.055em;
+  --text-hero--letter-spacing: -0.04em;
   --text-display: 3.75rem;
   --text-display--line-height: 1;
-  --text-display--letter-spacing: -0.045em;
+  --text-display--letter-spacing: -0.035em;
   --text-h1: 2.5rem;
   --text-h1--line-height: 1.05;
-  --text-h1--letter-spacing: -0.035em;
+  --text-h1--letter-spacing: -0.03em;
   --text-h2: 1.875rem;
   --text-h2--line-height: 1.15;
-  --text-h2--letter-spacing: -0.03em;
+  --text-h2--letter-spacing: -0.025em;
   --text-h3: 1.25rem;
   --text-h3--line-height: 1.3;
   --text-h3--letter-spacing: -0.015em;
