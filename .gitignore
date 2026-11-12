@@ -60,3 +60,6 @@ pnpm-debug.log*
 # --- AI assistant instruction files (kept local, never published) ---
 CLAUDE.md
 AGENTS.md
+
+# --- Design references (inspiration only, never published) ---
+/docs/design/references/
