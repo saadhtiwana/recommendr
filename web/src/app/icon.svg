@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#FAFAF8"/>
+  <defs><mask id="fv-gap" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32"><rect width="32" height="32" fill="#fff"/><path d="M1.74 19.53 28.54 10.93 30.26 16.27 3.46 24.87Z" fill="#000"/></mask></defs>
+  <path d="M7 26V12.6C7 7.6 10.5 4.6 15.5 4.6h9.7c2.4 0 3.8 1.6 3.8 3.8 0 2.4-1.6 4-4 4h-9.3c-1.6 0-2.5 1-2.5 2.5V26c0 1.8-1.4 3-3.1 3S7 27.8 7 26Z" fill="#111311" mask="url(#fv-gap)"/>
+  <path d="M2.05 20.48 28.85 11.88 29.95 15.32 3.15 23.92Z" fill="#D6F69A"/>
+</svg>
