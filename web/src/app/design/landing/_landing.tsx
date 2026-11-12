@@ -1,6 +1,8 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, ArrowUpRight, Pause, Play, Plus, Search } from "lucide-react";
+import { ReactLenis } from "lenis/react";
+import "lenis/dist/lenis.css";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -109,13 +111,13 @@ type FanCard =
 // Alternating answers and sharp photos, like a hand of cards. Answer text is short on purpose:
 // the card should read in one glance.
 const FAN: FanCard[] = [
-  { kind: "photo", src: "/media/photos/florist-tablet.jpg", alt: "A florist checking orders on a tablet", label: "Florist" },
+  { kind: "photo", src: "/media/photos/grocery-tablet.jpg", alt: "Grocery staff checking a tablet", label: "Grocer" },
   { kind: "answer", engine: "gemini", q: "same-day flowers in Lahore", text: ["", "Gulberg Flower Studio", " delivers until 7 pm."], verdict: "Mentioned · #1", good: true },
-  { kind: "photo", src: "/media/video/48714-poster.jpg", alt: "A shop owner smiling in her clothing store", label: "Boutique" },
+  { kind: "photo", src: "/media/photos/boutique-counter.jpg", alt: "Staff serving a customer at a boutique counter", label: "Boutique" },
   { kind: "answer", engine: "chatgpt", q: "best biryani in Islamabad", text: ["Try ", "Dera Biryani House", " for Sindhi-style biryani."], verdict: "Mentioned · #2", good: true },
-  { kind: "photo", src: "/media/photos/clinic-reception.jpg", alt: "A clinic receptionist talking with a visitor", label: "Clinic" },
+  { kind: "photo", src: "/media/photos/dentist.jpg", alt: "A dentist in her clinic", label: "Dentist" },
   { kind: "answer", engine: "perplexity", q: "family dentist in Leeds", text: ["Northgate Dental and Kirkstall Smiles are top rated.", "", ""], verdict: "Not mentioned", good: false },
-  { kind: "photo", src: "/media/photos/agency-team.jpg", alt: "A small team planning around a table", label: "Agency" },
+  { kind: "photo", src: "/media/photos/barber.jpg", alt: "A barber with a client", label: "Barber" },
 ]
 
 // Fan geometry: 160px between card centres (each 220px card shows most of its face), a gentle
@@ -179,22 +181,6 @@ function Fan() {
             </motion.div>
           );
         })}
-        <motion.span
-          className="absolute left-[-300px] top-[-34px] z-30 whitespace-nowrap rounded-full bg-ink px-3 py-1.5 text-small font-medium text-white shadow-lg"
-          initial={reduce ? false : { opacity: 0, y: 8 }}
-          animate={reduce ? { opacity: 1 } : { opacity: 1, y: [0, -6, 0] }}
-          transition={{ opacity: { delay: 1.1, duration: 0.4 }, y: { delay: 1.1, duration: 4, repeat: Infinity, ease: "easeInOut" } }}
-        >
-          ChatGPT mentioned you
-        </motion.span>
-        <motion.span
-          className="absolute left-[170px] top-[-30px] z-30 whitespace-nowrap rounded-full bg-lime px-3 py-1.5 text-small font-medium text-lime-ink shadow-lg"
-          initial={reduce ? false : { opacity: 0, y: 8 }}
-          animate={reduce ? { opacity: 1 } : { opacity: 1, y: [0, -8, 0] }}
-          transition={{ opacity: { delay: 1.3, duration: 0.4 }, y: { delay: 1.3, duration: 5, repeat: Infinity, ease: "easeInOut" } }}
-        >
-          3 of 10 answers
-        </motion.span>
       </div>
     </div>
   );
@@ -413,21 +399,10 @@ function Word({ children, progress, range }: { children: ReactNode; progress: Mo
   return <motion.span style={{ opacity }} className="inline">{children}</motion.span>;
 }
 
-function PhotoPill({ src, alt }: { src: string; alt: string }) {
-  return (
-    <span className="relative mx-1 inline-block h-[0.82em] w-[1.5em] translate-y-[0.08em] overflow-hidden rounded-full align-baseline">
-      <Image src={src} alt={alt} fill sizes="80px" className="object-cover [filter:saturate(0.92)_sepia(0.06)]" />
-    </span>
-  );
-}
-
 function Statement() {
   const ref = useRef<HTMLParagraphElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 85%", "end 45%"] });
-  const tokens: (string | { img: string; alt: string })[] = [
-    "Whether", "you", "run", "a", "flower", "shop", { img: "/media/photos/florist-tablet.jpg", alt: "florist" }, "a", "dental", "clinic", { img: "/media/photos/clinic-reception.jpg", alt: "clinic reception" },
-    "or", "an", "agency", { img: "/media/photos/agency-team.jpg", alt: "agency team" }, "see", "who", "AI", "recommends", "instead", "of", "you,", "and", "why.",
-  ];
+  const tokens = "Whether you run a flower shop, a dental clinic or an agency, see who AI recommends instead of you, and why.".split(" ");
   return (
     <section aria-label="What Recommendr shows you" className="mx-auto max-w-[1100px] px-5 py-20 md:px-10 md:py-28">
       <p ref={ref} className="text-[clamp(2rem,4.6vw,3.6rem)] font-medium leading-[1.08] tracking-[-0.045em] text-ink">
@@ -435,7 +410,7 @@ function Statement() {
           const range: [number, number] = [i / tokens.length, (i + 1) / tokens.length];
           return (
             <Word key={i} progress={scrollYProgress} range={range}>
-              {typeof t === "string" ? <>{t} </> : <><PhotoPill src={t.img} alt={t.alt} />{" "}</>}
+              {t}{" "}
             </Word>
           );
         })}
@@ -444,83 +419,149 @@ function Statement() {
   );
 }
 
-// ------------------------------------------------------------------ how it works (split, scattered product cards)
+// ------------------------------------------------------------------ how it works: product showcase
 
-function FloatCard({ children, className, delay = 0, drift = 8 }: { children: ReactNode; className?: string; delay?: number; drift?: number }) {
-  const reduce = useReducedMotion();
+const TABS = [
+  { id: "questions", label: "Questions", title: "The questions your customers ask", body: "Suggested from your website, grouped by intent." },
+  { id: "answers", label: "Answers", title: "What each AI actually says", body: "Every answer kept, with its sources." },
+  { id: "fixes", label: "Fixes", title: "What to change, ready to paste", body: "Ranked by impact, generated from your facts." },
+] as const;
+
+function QuestionsPanel() {
+  const rows = [
+    { q: "best biryani in Islamabad", tag: "Discovery", p: 0.3 },
+    { q: "Sindhi biryani near me", tag: "Specific", p: 0.68 },
+    { q: "biryani delivery late night", tag: "Local", p: 0.17 },
+    { q: "catering for 100 people", tag: "Specific", p: 0.45 },
+  ];
   return (
-    <motion.div
-      className={cn("absolute rounded-[22px] bg-surface p-4 shadow-[0_20px_50px_-24px_rgb(17_19_17/0.35)]", className)}
-      initial={reduce ? false : { opacity: 0, y: 40, rotate: 0 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.9, delay, ease: EASE }}
-    >
-      <motion.div animate={reduce ? undefined : { y: [0, -drift, 0] }} transition={{ duration: 6 + delay * 4, repeat: Infinity, ease: "easeInOut" }}>
-        {children}
-      </motion.div>
-    </motion.div>
+    <ul className="divide-y divide-line">
+      {rows.map((r) => (
+        <li key={r.q} className="flex items-center gap-4 py-4">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-body font-medium">{r.q}</p>
+            <p className="text-small text-ink-3">{r.tag}</p>
+          </div>
+          <div className="hidden h-1.5 w-40 overflow-hidden rounded-full bg-fill sm:block" aria-hidden>
+            <div className="h-full rounded-full bg-ink" style={{ width: `${r.p * 100}%` }} />
+          </div>
+          <span className="w-12 text-right font-mono text-small tabular">{Math.round(r.p * 100)}%</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
-function HowItWorks() {
-  const steps = [
-    { n: "01", t: "Pick your questions", d: "We suggest them from your website." },
-    { n: "02", t: "We ask four AIs, many times", d: "Every answer kept, with the source." },
-    { n: "03", t: "Fix what's wrong", d: "Ranked fixes, ready to paste." },
+function AnswersPanel() {
+  const rows: { e: EngineId; t: ReactNode; v: string; good: boolean }[] = [
+    { e: "chatgpt", t: <>Try <mark className="rounded-[4px] bg-lime px-1 text-lime-ink">Dera Biryani House</mark> for Sindhi-style biryani.</>, v: "#2", good: true },
+    { e: "gemini", t: <><mark className="rounded-[4px] bg-lime px-1 text-lime-ink">Dera Biryani House</mark> in G-9 comes up most.</>, v: "#1", good: true },
+    { e: "perplexity", t: <>Shahi Handi and Lahori Degh are the top picks.</>, v: "Missing", good: false },
   ];
   return (
-    <section id="how" aria-labelledby="how-title" className="mx-auto grid max-w-[1240px] gap-12 px-5 py-20 md:px-10 lg:grid-cols-[1fr_1.15fr] lg:items-center">
-      <div>
-        <Reveal>
-          <p className="mb-3 text-small font-medium text-ink-3">How it works</p>
-          <h2 id="how-title" className="text-[clamp(2.25rem,5vw,3.75rem)] font-medium leading-[1] tracking-[-0.045em]">
-            Track, compare <span className="text-ink-3/70">&amp; fix</span> how AI sees you.
-          </h2>
-        </Reveal>
-        <ol className="mt-10 space-y-6">
-          {steps.map((s, i) => (
-            <Reveal key={s.n} delay={i * 0.08}>
-              <li className="flex gap-5 border-t border-line pt-5">
-                <span className="font-mono text-small text-ink-3">{s.n}</span>
-                <div>
-                  <h3 className="text-h4 font-medium tracking-[-0.01em]">{s.t}</h3>
-                  <p className="mt-1 max-w-md text-body text-ink-2">{s.d}</p>
-                </div>
-              </li>
-            </Reveal>
+    <ul className="space-y-3">
+      {rows.map((r) => (
+        <li key={r.e} className="flex items-start gap-4 rounded-[16px] bg-bg p-4">
+          <EngineLogo engine={r.e} size={20} className="mt-0.5 text-ink" />
+          <p className="flex-1 text-body leading-relaxed">{r.t}</p>
+          <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-small font-medium", r.good ? "bg-up-soft text-up" : "bg-fill text-ink-3")}>{r.v}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function FixesPanel() {
+  return (
+    <div className="grid gap-4 md:grid-cols-[0.8fr_1.2fr]">
+      <div className="rounded-[16px] bg-bg p-5">
+        <div className="flex items-center gap-2 text-ink-3">
+          <EngineLogo engine="claude" size={16} />
+          <EngineLogo engine="chatgpt" size={16} />
+          <span className="text-small">said this 9 times</span>
+        </div>
+        <p className="mt-3 text-h3 font-medium tracking-[-0.02em]">&ldquo;No private dining.&rdquo;</p>
+        <p className="mt-2 text-small text-up">Truth: two family rooms.</p>
+      </div>
+      <CodeBlock code={JSONLD} language="json" filename="restaurant.jsonld" />
+    </div>
+  );
+}
+
+function Showcase() {
+  const [tab, setTab] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const reduce = useReducedMotion();
+  // auto-advance like a product tour; pauses while the pointer is over it
+  useEffect(() => {
+    if (paused || reduce) return;
+    const t = setTimeout(() => setTab((n) => (n + 1) % TABS.length), 6000);
+    return () => clearTimeout(t);
+  }, [tab, paused, reduce]);
+  const active = TABS[tab]!;
+  return (
+    <section id="how" aria-labelledby="how-title" className="mx-auto max-w-[1240px] px-5 py-24 md:px-10">
+      <Reveal className="flex flex-wrap items-end justify-between gap-6">
+        <h2 id="how-title" className="text-[clamp(2.25rem,5vw,3.75rem)] font-medium leading-[1] tracking-[-0.045em]">
+          Track, compare <span className="text-ink-3/70">&amp; fix.</span>
+        </h2>
+        <div role="tablist" aria-label="Product tour" className="flex rounded-full bg-surface p-1">
+          {TABS.map((t, i) => (
+            <button
+              key={t.id}
+              role="tab"
+              type="button"
+              aria-selected={i === tab}
+              onClick={() => setTab(i)}
+              className={cn("relative h-9 rounded-full px-4 text-small font-medium transition-colors duration-300 focus-visible:focus-ring", i === tab ? "text-white" : "text-ink-2 hover:text-ink")}
+            >
+              {i === tab ? <motion.span layoutId="tab-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: "spring", stiffness: 380, damping: 32 }} /> : null}
+              <span className="relative">{t.label}</span>
+            </button>
           ))}
-        </ol>
-      </div>
-      <div className="relative h-[520px] overflow-hidden rounded-[28px] bg-fill sm:h-[560px]">
-        <FloatCard className="left-[6%] top-[7%] w-[min(300px,80%)]" delay={0.05}>
-          <p className="text-small text-ink-3">AI visibility · all engines</p>
-          <div className="mt-2 flex items-baseline gap-3">
-            <span className="font-mono text-[40px] font-medium tracking-[-0.04em]">33%</span>
-            <span className="font-mono text-body text-ink-3">±4</span>
-            <span className="ml-auto rounded-full bg-up-soft px-2 py-0.5 text-micro font-medium normal-case tracking-normal text-up">+7.1 pts</span>
+        </div>
+      </Reveal>
+      <Reveal delay={0.1}>
+        <div className="mt-10 rounded-[28px] bg-surface p-5 md:p-8" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+          <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2">
+            <AnimatePresence mode="wait">
+              <motion.div key={active.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.35, ease: EASE }}>
+                <p className="text-h3 font-medium tracking-[-0.02em]">{active.title}</p>
+                <p className="mt-1 text-small text-ink-3">{active.body}</p>
+              </motion.div>
+            </AnimatePresence>
+            <div className="flex gap-1.5" aria-hidden>
+              {TABS.map((t, i) => (
+                <span key={t.id} className="h-1 w-10 overflow-hidden rounded-full bg-fill">
+                  {i === tab ? (
+                    <motion.span
+                      key={`${tab}-${paused}`}
+                      className="block h-full bg-ink"
+                      initial={{ width: paused || reduce ? "100%" : "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: paused || reduce ? 0 : 6, ease: "linear" }}
+                    />
+                  ) : null}
+                </span>
+              ))}
+            </div>
           </div>
-          <p className="mt-1 text-small text-ink-2">196 of 594 answers</p>
-        </FloatCard>
-        <FloatCard className="right-[5%] top-[30%] w-[min(310px,82%)]" delay={0.18} drift={10}>
-          <div className="flex items-center gap-2 text-small font-medium"><EngineLogo engine="gemini" size={16} />Gemini</div>
-          <p className="mt-2 text-small leading-relaxed">For Sindhi biryani, try <mark className="rounded-[4px] bg-lime px-1 text-lime-ink">Dera Biryani House</mark>.</p>
-        </FloatCard>
-        <FloatCard className="bottom-[8%] left-[8%] w-[min(290px,78%)]" delay={0.3} drift={7}>
-          <p className="text-micro font-medium text-down">False fact</p>
-          <p className="mt-1.5 text-small">&ldquo;No private dining.&rdquo;</p>
-          <p className="mt-1 text-small text-ink-3">You have two family rooms.</p>
-        </FloatCard>
-        <motion.span
-          className="absolute bottom-[30%] right-[10%] rounded-full bg-lime px-3 py-1.5 text-small font-medium text-lime-ink shadow-lg"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6, type: "spring" }}
-        >
-          Fix ready
-        </motion.span>
-      </div>
+          <div className="relative min-h-[230px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active.id}
+                role="tabpanel"
+                initial={{ opacity: 0, filter: "blur(6px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, filter: "blur(6px)" }}
+                transition={{ duration: 0.4, ease: EASE }}
+              >
+                {tab === 0 ? <QuestionsPanel /> : tab === 1 ? <AnswersPanel /> : <FixesPanel />}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </Reveal>
     </section>
   );
 }
@@ -528,11 +569,11 @@ function HowItWorks() {
 // ------------------------------------------------------------------ who it's for
 
 const WHO = [
-  { src: "/media/photos/florist-tablet.jpg", alt: "A florist checking orders on a tablet", t: "Florists", d: "Are you the shop AI names?" },
-  { src: "/media/video/48714-poster.jpg", alt: "A shop owner smiling in her clothing store", t: "Boutiques", d: "Get found for \u201Cnear me\u201D." },
-  { src: "/media/photos/clinic-reception.jpg", alt: "A clinic receptionist talking with a visitor", t: "Clinics", d: "Catch wrong hours and prices." },
-  { src: "/media/video/4385-poster.jpg", alt: "Diners in a bright restaurant", t: "Restaurants", d: "See who AI picks instead." },
-  { src: "/media/photos/agency-team.jpg", alt: "A small team planning around a table", t: "Agencies", d: "One report per client." },
+  { src: "/media/photos/florist-customer.jpg", alt: "A florist handing flowers to a customer", t: "Florists", d: "Are you the shop AI names?" },
+  { src: "/media/photos/chef.jpg", alt: "A young chef cooking in a kitchen", t: "Restaurants", d: "See who AI picks instead." },
+  { src: "/media/photos/makeup-artist.jpg", alt: "A make-up artist with a client", t: "Salons", d: "Catch wrong prices and hours." },
+  { src: "/media/photos/trainer.jpg", alt: "A personal trainer coaching a client", t: "Gyms", d: "Show up for \u201Cnear me\u201D." },
+  { src: "/media/photos/vet.jpg", alt: "A vet examining a dog", t: "Clinics", d: "Fix what AI gets wrong." },
 ]
 
 function WhoItsFor() {
@@ -623,24 +664,6 @@ const JSONLD = `{
   }
 }`;
 
-function FixExample() {
-  return (
-    <section aria-labelledby="fix-title" className="mx-auto grid max-w-[1240px] gap-10 px-5 py-24 md:px-10 lg:grid-cols-2 lg:items-center">
-      <Reveal>
-        <SectionTitle eyebrow="False facts, fixed" title="Catch what AI" muted="gets wrong." />
-        <div className="mt-8 rounded-[20px] bg-surface p-5">
-          <div className="flex items-center gap-2 text-ink-3"><EngineLogo engine="claude" size={16} /><EngineLogo engine="chatgpt" size={16} /><span className="text-small">said this 9 times</span></div>
-          <p className="mt-3 text-h3 font-medium tracking-[-0.02em]">&ldquo;No private dining.&rdquo;</p>
-          <p className="mt-2 text-small text-up">Truth: two family rooms.</p>
-        </div>
-      </Reveal>
-      <Reveal delay={0.1}>
-        <CodeBlock code={JSONLD} language="json" filename="restaurant.jsonld" />
-      </Reveal>
-    </section>
-  );
-}
-
 // ------------------------------------------------------------------ pricing
 
 function Pricing() {
@@ -698,12 +721,10 @@ function LimeBand() {
     <section aria-label="Recommendr in short" className="px-3 py-10 md:px-6">
       <div className="mx-auto max-w-[1240px] overflow-hidden rounded-[28px] bg-lime py-10 text-lime-ink md:py-14">
         <Marquee speed={30}>
-          {bits.map((b, i) => (
-            <span key={b} className="mx-6 flex items-center gap-6 whitespace-nowrap text-[clamp(2.25rem,5.5vw,4.5rem)] font-medium tracking-[-0.05em]">
+          {bits.map((b) => (
+            <span key={b} className="mx-8 flex items-center gap-16 whitespace-nowrap text-[clamp(2.25rem,5.5vw,4.5rem)] font-medium tracking-[-0.05em]">
               {b}
-              <span className="relative inline-block h-[0.7em] w-[1.3em] overflow-hidden rounded-full">
-                <Image src={WHO[i % WHO.length]!.src} alt="" fill sizes="90px" className="object-cover [filter:saturate(0.92)_sepia(0.06)]" />
-              </span>
+              <span className="size-3 rounded-full bg-lime-ink/70" aria-hidden />
             </span>
           ))}
         </Marquee>
@@ -745,8 +766,8 @@ function Footer() {
     <footer className="px-3 pb-3 md:px-6 md:pb-6">
       <div className="mx-auto grid max-w-[1240px] gap-4 md:grid-cols-2">
         {[
-          { src: "/media/video/9039-poster.jpg", t: "Self-host it", d: "One Docker Compose file.", href: `${GITHUB}/blob/main/docs/self-hosting.md`, cta: "Self-hosting guide" },
-          { src: "/media/video/48713-poster.jpg", t: "Read the source", d: "AGPL-3.0 on GitHub.", href: GITHUB, cta: "View on GitHub" },
+          { src: "/media/photos/cafe-counter.jpg", t: "Self-host it", d: "One Docker Compose file.", href: `${GITHUB}/blob/main/docs/self-hosting.md`, cta: "Self-hosting guide" },
+          { src: "/media/photos/florist-orders.jpg", t: "Read the source", d: "AGPL-3.0 on GitHub.", href: GITHUB, cta: "View on GitHub" },
         ].map((c) => (
           <a key={c.t} href={c.href} className="group relative block aspect-[16/10] overflow-hidden rounded-[24px] bg-ink focus-visible:focus-ring">
             <Image src={c.src} alt="" fill sizes="(min-width: 768px) 620px, 100vw" className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.03]" />
@@ -785,7 +806,8 @@ function Footer() {
 // ------------------------------------------------------------------ page
 
 export function Landing() {
-  return (
+  const reduce = useReducedMotion();
+  const page = (
     <div className="min-h-screen bg-canvas p-2 md:p-3">
       {/* the page is a rounded frame floating on the canvas */}
       <div className="relative overflow-clip rounded-[24px] bg-bg shadow-frame md:rounded-[32px]">
@@ -798,10 +820,9 @@ export function Landing() {
           <MediaCarousel />
           <Engines />
           <Statement />
-          <HowItWorks />
+          <Showcase />
           <WhoItsFor />
           <Honest />
-          <FixExample />
           <Pricing />
           <LimeBand />
           <Faq />
@@ -810,4 +831,6 @@ export function Landing() {
       </div>
     </div>
   );
+  // Smooth, eased scrolling (Lenis); native scrolling when the user prefers reduced motion.
+  return reduce ? page : <ReactLenis root options={{ lerp: 0.09, anchors: true }}>{page}</ReactLenis>;
 }

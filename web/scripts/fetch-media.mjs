@@ -12,13 +12,19 @@ const CLIPS = [
   { id: "48713", seconds: 8 },
   { id: "4385", seconds: 10 },
 ];
-// Stills: [mixkit id, file name, position in seconds]
+// Stills: [mixkit id, file name]; the frame is taken at 35% of the clip, from 1080p when available
 const STILLS = [
-  ["6424", "florist-tablet", 4.4],
-  ["21670", "clinic-reception", 2.0],
-  ["48713", "agency-team", 2.7],
-  ["16073", "salon", 6.9],
-  ["50033", "bakery", 6.4],
+  ["15718", "boutique-counter"],
+  ["33328", "dentist"],
+  ["43223", "barber"],
+  ["5929", "grocery-tablet"],
+  ["15115", "florist-customer"],
+  ["13875", "chef"],
+  ["40540", "makeup-artist"],
+  ["47462", "trainer"],
+  ["48986", "vet"],
+  ["41222", "cafe-counter"],
+  ["6420", "florist-orders"],
 ];
 
 const ff = (...args) => execFileSync("ffmpeg", ["-loglevel", "error", "-y", ...args], { stdio: "inherit" });
@@ -44,10 +50,11 @@ for (const { id, seconds } of CLIPS) {
   console.log(`video ${id} done`);
 }
 
-for (const [id, name, at] of STILLS) {
+for (const [id, name] of STILLS) {
   const raw = `${OUT}photos/${id}.src.mp4`;
-  await fetchTo(src(id), raw);
-  ff("-ss", String(at), "-i", raw, "-frames:v", "1", "-vf", "scale='min(1600,iw)':-2", "-q:v", "4", `${OUT}photos/${name}.jpg`);
+  await fetchTo(`https://assets.mixkit.co/videos/${id}/${id}-1080.mp4`, raw).catch(() => fetchTo(src(id), raw));
+  const duration = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", raw]).toString());
+  ff("-ss", (duration * 0.35).toFixed(2), "-i", raw, "-frames:v", "1", "-vf", "scale='min(1600,iw)':-2", "-q:v", "2", `${OUT}photos/${name}.jpg`);
   rmSync(raw);
   console.log(`photo ${name} done`);
 }

@@ -20,8 +20,8 @@ sentence in muted grey: "Measured where *customers ask.*"). Very few colours: in
 highlighter, and data colours inside charts.
 
 **Marketing site:** motion is part of the brand. Headlines come into focus word by word (blur to
-sharp), a fanned stack of real AI-answer cards springs open in the hero, floating chips annotate
-it, sections reveal as they scroll in, a statement sentence fills in as you scroll, marquees
+sharp), a fanned stack of real AI-answer cards springs open in the hero, sections reveal as they
+scroll in, a product tour cycles through questions, answers and fixes, a statement sentence fills in as you scroll, marquees
 carry the assistant names and the lime band. Real footage and photos of the kinds of businesses we
 serve (see Imagery). Every animation respects `prefers-reduced-motion`.
 
@@ -29,7 +29,7 @@ serve (see Imagery). Every animation respects `prefers-reduced-motion`.
 sidebar card, KPI cards with soft change badges, smooth area charts with confidence bands. No
 stock imagery in the product.
 
-**Banned:** purple/indigo/violet; gradient blobs or glows; glassmorphism; emoji as icons; grids of
+**Banned:** floating decorative chips and drifting cards; reusing the same photo twice on a page; numbered "01 / 02 / 03" step lists; purple/indigo/violet; gradient blobs or glows; glassmorphism; emoji as icons; grids of
 three identical feature cards; fake social proof (names, quotes, ratings or logos implying
 customers we don't have); filler copy ("seamless", "elevate", "unleash", "supercharge",
 "revolutionize", "effortlessly", "game-changer"). Tailwind's default colour palette is
@@ -223,7 +223,8 @@ recorded in [`web/public/media/CREDITS.md`](../../web/public/media/CREDITS.md);
 |---|---|
 | Headline words | blur 8px → 0, fade, 6px rise, 45ms stagger, 600ms, ease `[0.22, 1, 0.36, 1]` |
 | Hero fan | spring (stiffness 70, damping 16) from a stacked pile to the fan, staggered from the centre out; hover lifts a card |
-| Floating chips | slow vertical bob (4 to 5 s loop) |
+| Product tour | tabs with a sliding ink pill, 6 s auto-advance with a progress bar, pauses on hover |
+| Scrolling | Lenis smooth scroll (lerp 0.09), off with reduced motion |
 | Section reveals | fade + 24px rise + blur, once, when 15% visible |
 | Statement sentence | words fill from 18% to 100% opacity, tied to scroll position |
 | Marquees | linear, 30 to 40 s per loop |
