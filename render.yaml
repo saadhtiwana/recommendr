@@ -1,0 +1,4 @@
+# Render Blueprint: placeholder, completed in phase 13 (deployment).
+# Planned services: recommendr-api (web: uvicorn app.main:app), recommendr-worker (worker: python -m app.worker),
+# recommendr-scheduler (cron: python -m app.scheduler), recommendr-web (Next.js web service).
+# Database: Neon (external), pooled URL for web, direct URL for worker/scheduler/migrations. See docs/adr/0019.
